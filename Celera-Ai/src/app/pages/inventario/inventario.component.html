@@ -1,0 +1,112 @@
+<div class="w-100 d-flex">
+
+    <div class="w-25   align-content-center text-center" style="height: 100vh; background-color: rgb(113, 209, 145); border-top-right-radius: 20px; border-bottom-right-radius: 15px;">
+        <mat-card appearance="outlined" class="mb-5 w-50 mx-auto">
+            <div class="h-50  ">
+                <mat-card-content class="w-100"><strong>{{negocios.nombre!}}</strong></mat-card-content>
+            </div>
+            
+          </mat-card>
+          <div class="h-50">
+              
+              <app-header></app-header>
+          </div>
+    
+    </div>
+    <div class="w-100">
+        <h3 class="text-center mt-5 card mx-auto w-25">Todos tus productos</h3>
+        <div class="mx-auto text-center mt-5 d-flex w-100">
+         
+          <div class="w-50 mx-auto  mb-2" >
+            <button class="btn  btn-success w-25 me-2" (click)="open(content)">Añadir productos</button>
+            <button class="btn  btn-success w-w-100" (click)="open(content)">Importar producto de excel</button>
+          </div>
+         
+
+        </div>
+        <div class="w-75 mx-auto text-center d-flex mb-2 mt-1" style="justify-content: space-around;">
+          <button type="button" class="btn btn-primary " (click)="verTodosLOsProductos()" >Todos Los productos <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-funnel" viewBox="0 0 16 16">
+            <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5zm1 .5v1.308l4.372 4.858A.5.5 0 0 1 7 8.5v5.306l2-.666V8.5a.5.5 0 0 1 .128-.334L13.5 3.308V2z"/>
+          </svg></button>
+            <button type="button" class="btn btn-primary " (click)="mayorPrecio()" >Precio más alto <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-funnel" viewBox="0 0 16 16">
+  <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5zm1 .5v1.308l4.372 4.858A.5.5 0 0 1 7 8.5v5.306l2-.666V8.5a.5.5 0 0 1 .128-.334L13.5 3.308V2z"/>
+</svg></button>
+            <button type="button" class="btn btn-primary " (click)="mayorStock()" >Mayor stock <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-funnel" viewBox="0 0 16 16">
+  <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5zm1 .5v1.308l4.372 4.858A.5.5 0 0 1 7 8.5v5.306l2-.666V8.5a.5.5 0 0 1 .128-.334L13.5 3.308V2z"/>
+</svg></button>
+            <button type="button" class="btn btn-primary " (click)="menorStock()">Bajo stock <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-funnel" viewBox="0 0 16 16">
+  <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5zm1 .5v1.308l4.372 4.858A.5.5 0 0 1 7 8.5v5.306l2-.666V8.5a.5.5 0 0 1 .128-.334L13.5 3.308V2z"/>
+</svg></button>
+           
+            <button type="button" class="btn btn-primary " (click)="alfabeticamente()" >Ordenar alfabeticamente <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-funnel" viewBox="0 0 16 16">
+  <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5zm1 .5v1.308l4.372 4.858A.5.5 0 0 1 7 8.5v5.306l2-.666V8.5a.5.5 0 0 1 .128-.334L13.5 3.308V2z"/>
+</svg></button>
+        </div>
+        <div class="w-75 mx-auto card">
+
+            <table class="table  table-hover">
+                <thead>
+                  <tr>
+                    
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Precio</th>
+                    <th scope="col">Stock</th>
+                    <th scope="col">Proveedor</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let p of productos">
+                    <td>{{p.nombre}}</td>
+                    <td>{{p.precio}}€</td>
+                    <td>{{p.stock}}</td>
+                    <td>{{p.precioProveedor}}€</td>
+                    
+                  </tr>
+                  
+                </tbody>
+              </table>
+        </div>
+    </div>
+    <ng-template #content let-c="close" let-d="dismiss">
+      <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Añadir Producto</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="d('Cross click')"></button>
+      </div>
+      <div class="modal-body">
+       
+
+<div class="div mx-auto mt-5 card shadow w-100   bg-white rounded" style=" border-radius: 15px;">
+  <form [formGroup]="profileLogin" (ngSubmit)="login()">
+    <div class="mb-3 mx-auto w-50 mt-5">
+      <label for="emailLog" class="form-label">Nombre producto</label>
+      <input type="text" class="form-control" id="emailLog" aria-describedby="emailHelp" formControlName="nombre">
+
+
+    </div>
+    <div class="mb-3 mx-auto w-50 mt-5">
+      <label for="emailLog" class="form-label">Precio</label>
+      <input type="number" class="form-control" id="emailLog" aria-describedby="emailHelp" formControlName="precio">
+
+
+    </div>
+    <div class="mb-3 mx-auto w-50 mt-5">
+      <label for="emailLog" class="form-label">Stock</label>
+      <input type="number" class="form-control" id="emailLog" aria-describedby="emailHelp" formControlName="stock">
+
+
+    </div>
+    <div class="mb-3 mx-auto w-50">
+      <label for="exampleInputPassword1" class="form-label">Precio Proveedor</label>
+      <input type="number" class="form-control" id="exampleInputPassword1" formControlName="precioProveedor">
+    </div>
+    <div class="mb-3 mx-auto w-50">
+      <button type="submit " class="btn btn-primary  w-100">Submit</button>
+    </div>
+
+  </form>
+</div>
+      </div>
+     
+    </ng-template>
+
+</div>

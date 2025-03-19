@@ -1,0 +1,151 @@
+<div class="w-100 d-flex">
+    <div class="w-25   align-content-center text-center" style="height: 100vh; background-color: rgb(113, 209, 145); border-top-right-radius: 20px; border-bottom-right-radius: 15px;">
+        <mat-card appearance="outlined" class="mb-5 w-50 mx-auto">
+            <div class="h-50  ">
+                <mat-card-content class="w-100"><strong>{{negocios.nombre!}}</strong></mat-card-content>
+            </div>
+            
+          </mat-card>
+          <div class="h-50">
+              
+              <app-header></app-header>
+          </div>
+    
+    </div>
+
+    
+
+     
+
+        <div class="d-flex justify-content-center align-items-center w-100">
+    
+            
+    
+            <div class="w-50">
+    
+                <div class="card w-100  text-center mx-auto" style="background-color: rgb(247, 245, 163); height: 410px;">
+                    <div class="card-body">
+                      <h5 class="card-title">Ventas Semanales</h5>
+                      
+                      <p class="card-text" *ngIf="ventas">
+                        Semana: {{ ventas.semana }}
+                      </p>
+                      <hr>
+                      
+                      <div class="d-flex flex-column" style="max-height: 350px; ">
+                        <ul class="list-group " >
+                          <li class="list-group-item d-flex justify-content-between" *ngFor="let dia of obtenerDiasSemana()">
+                            <span>{{ dia }}</span>
+                            <span class="fw-bold">{{ ventas.ventas[dia]| currency:'EUR' }}</span>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  
+                  
+    
+    
+    
+              <div class="card w-100 p-3 text-center mt-3 mx-auto" style="height: 250px; background-color: rgb(175, 240, 226);">
+                <div class="card-body">
+                  Productos mas vendido en esta semana
+                  <hr>
+
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Precio</th>
+                        <th scope="col">Stock</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let p of productos">
+                        
+                        <td>{{p.nombre}}</td>
+                        <td>{{p.precio}}€</td>
+                        <td>{{p.stock}}</td>
+                      </tr>
+                     
+                    </tbody>
+                  </table>
+
+                </div>
+              </div>
+               
+            </div>
+         
+    
+            <div class="mx-auto w-75">
+              <div class="card w-100 text-center" style="height: 520px; background-color: rgb(75, 170, 91);">
+                <div class="card-body mx-auto">
+                  
+                  <!-- Botones y input en la misma fila -->
+                  <div class="d-flex justify-content-center align-items-center text-center gap-2">
+                    <button type="button" class="btn btn-primary" (click)="cambiarGrafico('semanal')">Estadísticas semanal</button>
+                    <button type="button" class="btn btn-primary" (click)="cambiarGrafico('mensual')">Estadísticas mensual</button>
+                    
+                    <!-- Input para definir el tope del eje Y -->
+                    <label for="">Previsión de ventas €</label>
+                    <input 
+                      type="number" 
+                      id="yMaxInput" 
+                      class="form-control w-25"
+                      [value]="yMax" 
+                      (input)="actualizarYMaximo($event)"
+                      style="max-width: 100px;">
+                  </div>
+                  
+                  <!-- Mostrar la gráfica según el estado de mostrarVentasSemanales -->
+                  <div *ngIf="mostrarVentasSemanales">
+                    <ngx-charts-bar-vertical
+                      [view]="view"
+                      [results]="ventasData"
+                      [xAxis]="showXAxis"
+                      [yAxis]="showYAxis"
+                      [gradient]="gradient"
+                      
+                      [showXAxisLabel]="showXAxisLabel"
+                      [xAxisLabel]="xAxisLabel"
+                      [showYAxisLabel]="showYAxisLabel"
+                      [yAxisLabel]="yAxisLabel"
+                      [yScaleMax]="yMax"
+                      >
+                    </ngx-charts-bar-vertical>
+                  </div>
+                  
+                  <div *ngIf="!mostrarVentasSemanales">
+                    <ngx-charts-bar-vertical
+                      [view]="view"
+                      [results]="ventasData"
+                      [xAxis]="showXAxis"
+                      [yAxis]="showYAxis"
+                      [gradient]="gradient"
+                      
+                      [showXAxisLabel]="showXAxisLabel"
+                      [xAxisLabel]="'Mensual'"
+                      [showYAxisLabel]="showYAxisLabel"
+                      [yAxisLabel]="yAxisLabel"
+                      [yScaleMax]="yMax"
+                      >
+                    </ngx-charts-bar-vertical>
+                  </div>
+                  
+                </div>
+              </div>
+              
+              
+            </div>
+    
+    
+    
+        </div>
+
+   
+    
+      
+    
+</div>

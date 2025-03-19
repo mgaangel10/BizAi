@@ -4,6 +4,7 @@ package com.example.CeleraAi.users.model;
 
 
 
+import com.example.CeleraAi.Negocio.model.Negocio;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -29,7 +30,8 @@ public class Usuario extends User {
     @ManyToMany(mappedBy = "usuarios")
     private List<Usuario> inChargeof;
 
-
+    @OneToMany
+    private List<Negocio> negocios;
 
 
 

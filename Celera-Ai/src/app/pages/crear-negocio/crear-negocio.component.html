@@ -1,0 +1,53 @@
+
+<h1 class="text-center mt-5">Login Administrador</h1>
+<div class="div mx-auto mt-5 card shadow   bg-white rounded" style="width: 40%; height: 100%; border-radius: 15px;">
+  <form [formGroup]="profileLogin" (ngSubmit)="login()">
+    <div class="mb-3 mx-auto w-50 mt-5">
+      <label for="emailLog" class="form-label">Nombre negocio</label>
+      <input type="text" class="form-control" id="emailLog" aria-describedby="emailHelp" formControlName="nombre">
+
+
+    </div>
+    <div class="mb-3 mx-auto w-50 mt-5">
+        <label for="emailLog" class="form-label">categoria</label>
+        <input type="text" class="form-control" id="emailLog" aria-describedby="emailHelp" formControlName="categorias">
+  
+  
+      </div>
+      <div class="mb-3 mx-auto w-50 mt-5">
+        <label for="emailLog" class="form-label">NumeroEmpleados</label>
+        <input type="number" class="form-control" id="emailLog" aria-describedby="emailHelp" formControlName="numeroEmpleados">
+  
+  
+      </div>
+      <div class="mb-3 mx-auto w-50 mt-5">
+        <label for="emailLog" class="form-label">Telefono</label>
+        <input type="tel" class="form-control" id="emailLog" aria-describedby="emailHelp" formControlName="telefono">
+  
+  
+      </div>
+      <div class="mb-3 mx-auto w-50 mt-5">
+        <label for="emailLog" class="form-label">Email</label>
+        <input type="email" class="form-control" id="emailLog" aria-describedby="emailHelp" formControlName="email">
+  
+  
+      </div>
+      <div class="mb-3 mx-auto w-50 mt-5">
+        <label for="emailLog" class="form-label">Ciudad</label>
+        <input type="text" class="form-control" id="emailLog" aria-describedby="emailHelp" formControlName="ciudad">
+  
+  
+      </div>
+      <div class="mb-3 mx-auto w-50 mt-5">
+        <label for="emailLog" class="form-label">SitioWeb</label>
+        <input type="text" class="form-control" id="emailLog" aria-describedby="emailHelp" formControlName="sitioWeb">
+  
+  
+      </div>
+    
+    <div class="mb-3 mx-auto w-50">
+      <button type="submit " class="btn btn-primary  w-100">Submit</button>
+    </div>
+
+  </form>
+</div>

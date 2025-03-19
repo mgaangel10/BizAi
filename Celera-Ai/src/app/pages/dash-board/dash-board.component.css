@@ -1,0 +1,7 @@
+/* Estilo para hacer que el contenedor de la lista tenga scroll si el contenido excede la altura */
+.ventas-scrollable {
+    max-height: 150px; /* Ajusta esta altura según el tamaño que prefieras */
+    overflow-y: auto;  /* Agrega scroll vertical si es necesario */
+    padding-right: 10px; /* Para evitar que el scroll se "pegue" a la derecha */
+  }
+  

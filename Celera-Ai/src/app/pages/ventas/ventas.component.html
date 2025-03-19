@@ -1,0 +1,165 @@
+
+<div class="w-100 d-flex">
+    <div class="w-25   align-content-center text-center" style="height: 100vh; background-color: rgb(113, 209, 145); border-top-right-radius: 20px; border-bottom-right-radius: 15px;">
+        <mat-card appearance="outlined" class="mb-5 w-50 mx-auto">
+            <div class="h-50  ">
+                <mat-card-content class="w-100"><strong>{{nombre}}</strong></mat-card-content>
+            </div>
+            
+          </mat-card>
+          <div class="h-50">
+              
+              <app-header></app-header>
+          </div>
+    
+    </div>
+
+    <div class="w-100">
+      <h3 class=" text-center">Ventas de las semanas</h3>
+      <hr class="w-75 mx-auto">
+        <div class="d-flex w-50 ms-2   text-center">
+            <div class="card me-1" *ngFor="let v of ventas">
+                <div class="card-header">
+                  
+                  <p class="fecha">{{ v.fecha | date: 'dd/MM/yyyy' }}</p>
+                </div>
+              
+                <div class="card-body">
+                  Ver detalles de la venta
+                </div>
+              
+                <div class="card-footer mx-auto w-100">
+                  <div class="total w-100 text-center">
+                    <h4>Total: <span style="color: green;">{{ v.total | number: '1.2-2' }}</span>€</h4>
+                  </div>
+                </div>
+              </div>
+              
+
+        </div>
+
+        <div class="text-center mt-5 mb-3">
+          
+          
+          <button class="btn  btn-success" (click)="open(content)">Nueva venta</button>
+
+        </div>
+        <div class="w-50 mx-auto" >
+          <div class="card shadow-sm" >
+            <div class="card-header bg-success text-white text-center fw-bold">
+              Productos de la Venta
+            </div>
+            <div class="card-body">
+              <div *ngIf="creandoVentas?.detalleVentas?.length; else noProductos">
+                <ul class="list-group">
+                  <li class="list-group-item" >
+                    <table class="table table-hover mx-auto text-center" >
+                      <thead>
+                        <tr>
+                          
+                          <th scope="col">Nombre</th>
+                          <th scope="col">Precio</th>
+                          <th scope="col">Cantidad</th>
+                          <th scope="col">Eliminar linea</th>
+
+                        </tr>
+                      </thead>
+                      <tbody *ngFor="let v of creandoVentas?.detalleVentas">
+                        <tr>
+                          <th>{{v.nombreProducto}}</th>
+                          <th>{{v.precioProducto}}€</th>
+                          <th >{{v.cantida}} <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus me-2 ms-2" viewBox="0 0 16 16">
+                            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+                          </svg><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash" viewBox="0 0 16 16">
+                            <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8"/>
+                          </svg>
+
+                          </th>
+                          <th><button type="button" class="btn btn-danger"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+                            <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
+                          </svg></button>
+                          </th>
+                          
+                        </tr>
+                       
+                      </tbody>
+                    </table>
+                  
+                  </li>
+                </ul>
+                <div class="w-100 mx-auto text-center mt-3">
+                
+                  <button class="btn  btn-success w-25 " (click)="terminarVenta(creandoVentas.id)" >Terminar venta</button>
+
+                </div>
+              </div>
+              <ng-template #noProductos>
+                <p class="text-center text-muted">Añade productos para una nueva venta.</p>
+              </ng-template>
+              
+            </div>
+            
+          </div>
+        </div>
+        
+    
+
+
+    </div>
+    <ng-template #content let-c="close" let-d="dismiss" class="w-100">
+      <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">TUs Productos</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="d('Cross click')"></button>
+      </div>
+      <div class="modal-body">
+        <table class="table  table-hover">
+          <thead>
+            <tr>
+              
+              <th scope="col">Nombre</th>
+              <th scope="col">Precio</th>
+              <th scope="col">Stock</th>
+              <th scope="col">PrecioProveedor</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (country of productos; track country.nombre) {
+              <tr (click)="crearVenta(country.id)">
+               
+                <td>
+                 
+                  {{ country.nombre }}
+                </td>
+                <td>{{ country.precio | number }}</td>
+                <td>
+                 
+                  {{ country.stock }}
+                </td>
+                <td>{{ country.precioProveedor | number }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+        
+        <div class="d-flex justify-content-between p-2">
+          <ngb-pagination
+            [collectionSize]="collectionSize"
+            [(page)]="page"
+            [pageSize]="pageSize"
+            (pageChange)="refreshCountries()"
+          >
+          </ngb-pagination>
+        
+          <select class="form-select" style="width: auto" [(ngModel)]="pageSize" (ngModelChange)="refreshCountries()">
+            <option [ngValue]="2">2 items per page</option>
+            <option [ngValue]="4">4 items per page</option>
+            <option [ngValue]="6">6 items per page</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" (click)="c('Save click')">Save</button>
+      </div>
+    </ng-template>
+
+</div>
