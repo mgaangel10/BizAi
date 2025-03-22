@@ -36,5 +36,21 @@ export class HeaderComponent {
     
   }
 
+  facturas(){
+    let id = localStorage.getItem('IDNEGOCIO');
+    
+      
+      this.router.navigate(['/facturar', id]);
+    
+  }
+
+  asistente(){
+    let id = localStorage.getItem('IDNEGOCIO');
+    
+      
+      this.router.navigate(['/asistente', id]);
+    
+  }
+
 
 }

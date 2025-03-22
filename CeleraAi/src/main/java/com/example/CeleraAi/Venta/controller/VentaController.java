@@ -2,6 +2,7 @@ package com.example.CeleraAi.Venta.controller;
 
 import com.example.CeleraAi.Producto.Dto.ProductoDto;
 import com.example.CeleraAi.Venta.Dto.CrearVentaDto;
+import com.example.CeleraAi.Venta.Dto.FiltrarVentaPorFechaDTo;
 import com.example.CeleraAi.Venta.Dto.VentaDto;
 import com.example.CeleraAi.Venta.model.Venta;
 import com.example.CeleraAi.Venta.service.VentaService;
@@ -66,6 +67,57 @@ public class VentaController {
         VentaDto ventaDtos = ventaService.verVentasActivas(id);
         return ResponseEntity.ok(ventaDtos);
     }
+
+    @GetMapping("usuario/ver/ventas/sin/factura/{id}")
+    public ResponseEntity<List<VentaDto>> ventasSInFacturas(@PathVariable UUID id){
+        List<VentaDto> ventaDtos = ventaService.verVentasSinFacturas(id);
+        return ResponseEntity.ok(ventaDtos);
+    }
+
+    @GetMapping("usuario/ver/ventas/ya/facturas/{id}")
+    public ResponseEntity<List<VentaDto>> ventasFacturadasa(@PathVariable UUID id){
+        List<VentaDto> ventaDtos = ventaService.verVentasSinFacturas(id);
+        return ResponseEntity.ok(ventaDtos);
+    }
+
+    @GetMapping("usuario/ver/todas/ventas/{id}")
+    public ResponseEntity<List<VentaDto>> verTodasVentas(@PathVariable UUID id){
+        List<VentaDto> ventaDtos = ventaService.verTodasVentas(id);
+        return ResponseEntity.ok(ventaDtos);
+    }
+
+    @PostMapping("usuario/añadir/mas/productos/ventas/{idV}/{idP}")
+    public ResponseEntity<VentaDto> verTodasVentas(@PathVariable UUID idV,@PathVariable UUID idP){
+        VentaDto ventaDtos = ventaService.editarVenta(idV, idP);
+        return ResponseEntity.status(201).body(ventaDtos);
+    }
+//whwhw
+
+    @GetMapping("usuario/filtrar/ventas/date/{id}")
+    public ResponseEntity<List<VentaDto>> getVetasFecha(@RequestBody FiltrarVentaPorFechaDTo filtrarVentaPorFechaDTo, @PathVariable UUID id){
+        List<VentaDto> ventaDtos = ventaService.getVentasByFecha(filtrarVentaPorFechaDTo,id);
+        return ResponseEntity.ok(ventaDtos);
+    }
+
+    @GetMapping("usuario/filtrar/ventas/factura/{id}")
+    public ResponseEntity<List<VentaDto>> getVentasFactura(@PathVariable UUID id){
+        List<VentaDto> ventaDtos = ventaService.getVentasConFactura(id);
+        return ResponseEntity.ok(ventaDtos);
+    }
+
+    @GetMapping("usuario/filtrar/ventas/editable/{id}")
+    public ResponseEntity<List<VentaDto>> getVentasNoTerminadas(@PathVariable UUID id){
+        List<VentaDto> ventaDtos = ventaService.getVentasNoTerminadas(id);
+        return ResponseEntity.ok(ventaDtos);
+    }
+
+    @GetMapping("usuario/filtrar/ventas/total/{id}")
+    public ResponseEntity<List<VentaDto>> getVentasTotalVenta(@PathVariable UUID id){
+        List<VentaDto> ventaDtos = ventaService.getVentasPorMayorTotalVenta(id);
+        return ResponseEntity.ok(ventaDtos);
+    }
+
+
 
 
 

@@ -1,5 +1,6 @@
 package com.example.CeleraAi.OpenAi.controller;
 
+import com.example.CeleraAi.OpenAi.PreguntaUsuarioDto;
 import com.example.CeleraAi.OpenAi.models.Recomendaciones;
 import com.example.CeleraAi.OpenAi.models.RecomendacionesRequest;
 import com.example.CeleraAi.OpenAi.service.OpenAIService;
@@ -30,7 +31,7 @@ public class OpenAIController {
     }
 
     @PostMapping("/usuario/generarRecomendaciones/{id}")
-    public ResponseEntity<String> generarRecomendaciones(@RequestBody String preguntaUSuario, @PathVariable UUID id) {
+    public ResponseEntity<String> generarRecomendaciones(@RequestBody PreguntaUsuarioDto preguntaUSuario, @PathVariable UUID id) {
         String resultado = openAIService.generarRecomendaciones(preguntaUSuario,id);
         return ResponseEntity.ok(resultado);
     }

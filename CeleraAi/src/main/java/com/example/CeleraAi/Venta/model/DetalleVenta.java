@@ -1,6 +1,7 @@
 package com.example.CeleraAi.Venta.model;
 
 import com.example.CeleraAi.Producto.model.Producto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,6 +22,7 @@ public class DetalleVenta {
     private double total;
 
     @ManyToOne
+    @JsonIgnore
     private Venta venta;
 
     @ManyToOne

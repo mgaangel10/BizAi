@@ -1,9 +1,8 @@
-package com.example.CeleraAi.Negocio.model;
+package com.example.CeleraAi.Finanzas.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.example.CeleraAi.Venta.model.Venta;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,16 +13,18 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Builder
-public class Categorias {
+
+public class Finanzas {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
-    private String nombre;
+
+    private double beneficio;
+
+    private double gastos;
 
     @OneToMany
-    @JsonIgnore
-    private List<Negocio> negocios;
+    private List<Venta> ventas;
 
 }

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UsuarioService } from '../../service/usuario.service';
 import { VentasResponse } from '../../model/ventas-dto';
-import { DetallesNegociosResponse } from '../../model/detalles-negocios';
+import { DetallesNegociosResponse, VentaDto } from '../../model/detalles-negocios';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbModal, NgbModalConfig } from '@ng-bootstrap/ng-bootstrap';
 import { TodosLosProductos } from '../../model/todos-productos';
@@ -15,13 +15,16 @@ import { TodosLosProductos } from '../../model/todos-productos';
 export class VentasComponent implements OnInit {
   ventas: VentasResponse[] = [];
   creandoVentas!: VentasResponse ;
-  nombre!: string;
+  nombre!: string; 
+   mostrarAlerta: boolean = false;
+
   negocioId!: string | null;
   allProductos: TodosLosProductos[] = []; // Mantiene la lista completa de productos
-
+  todasVentas:VentaDto[] = [];
+  idVenta!:string;
   page = 1;
   pageSize = 4;
-  idVentaActaual!:string;
+  idProductoActual!:string;
   collectionSize = 0;
   productos: TodosLosProductos[] = [];
   negocios!: DetallesNegociosResponse;
@@ -42,6 +45,7 @@ export class VentasComponent implements OnInit {
     this.negocioId = this.route.snapshot.paramMap.get('idNegocio');
     this.ventasSemanales();
     this.cargarProductos();
+    this.verTodasVentas();
     
   }
 
@@ -63,11 +67,36 @@ export class VentasComponent implements OnInit {
     );
   }
   
+  verTodasVentas(){
+    this.service.verTodasVentas(this.negocioId!).subscribe(r=>{
+      this.todasVentas = r
+    })
+  }
+
+  editarVenta(idP:string){
+    
+    this.service.editarVenta(this.idVenta,idP).subscribe(r=>{
+      this.creandoVentas = r;
+      this.ventaActual();
+    })
+  }
   
   
 
   open(content: any) {
     this.modalService.open(content, { size: 'xl', windowClass: 'custom-modal' });
+  }
+  open2(contentE: any, v:VentaDto) {
+    this.idVenta = v.id;
+    if (v.terminado) {
+      this.mostrarAlerta = false;
+     return setTimeout(() => {
+        this.mostrarAlerta = true;
+      }, 10); 
+    }else{
+
+      return this.modalService.open(contentE, { size: 'xl', windowClass: 'custom-modal' });
+    }
   }
   
 
@@ -82,15 +111,16 @@ export class VentasComponent implements OnInit {
 
   crearVenta(id:string){
 
-    this.idVentaActaual = id;
+    this.idProductoActual = id;
     this.service.crearVenta(id).subscribe(r=>{
       this.creandoVentas = r;
+      this.idVenta = r.id;
       this.ventaActual();
     })
   }
 
   ventaActual(){
-    this.service.verVentaActual(this.idVentaActaual).subscribe(r=>{
+    this.service.verVentaActual(this.idVenta).subscribe(r=>{
       this.creandoVentas = r;
       
     })
@@ -99,10 +129,35 @@ export class VentasComponent implements OnInit {
   terminarVenta(id:string){
     this.service.terminarVenta(id).subscribe(r=>{
       this.creandoVentas = r;
-      this.ventaActual
+      this.verTodasVentas();
+      this.ventaActual();
       this.ventasSemanales();
     })
   }
+
+  ventasConFactura(){
+    let id = localStorage.getItem('IDNEGOCIO');
+    this.service.ventasConFactura(id!).subscribe(r=>{
+      this.todasVentas = r;
+    })
+  }
+
+  ventasEditables(){
+    let id = localStorage.getItem('IDNEGOCIO');
+    this.service.ventasEditables(id!).subscribe(r=>{
+      this.todasVentas = r;
+    })
+  }
+
+
+  ventasTotaVentas(){
+    let id = localStorage.getItem('IDNEGOCIO');
+    this.service.ventasConTotalVentas(id!).subscribe(r=>{
+      this.todasVentas = r;
+    })
+  }
+
+  
 
 
 

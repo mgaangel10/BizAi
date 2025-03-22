@@ -1,11 +1,14 @@
 package com.example.CeleraAi.Venta.service;
 
 import ch.qos.logback.core.read.ListAppender;
+import com.example.CeleraAi.Facturacion.model.Factura;
+import com.example.CeleraAi.Facturacion.repositorio.FacturaRepo;
 import com.example.CeleraAi.Negocio.model.Negocio;
 import com.example.CeleraAi.Negocio.repositorio.NegocioRepo;
 import com.example.CeleraAi.Producto.model.Producto;
 import com.example.CeleraAi.Producto.repositorio.ProductoRepo;
 import com.example.CeleraAi.Venta.Dto.CrearVentaDto;
+import com.example.CeleraAi.Venta.Dto.FiltrarVentaPorFechaDTo;
 import com.example.CeleraAi.Venta.Dto.VentaDto;
 import com.example.CeleraAi.Venta.model.DetalleVenta;
 import com.example.CeleraAi.Venta.model.Venta;
@@ -34,6 +37,7 @@ public class VentaService {
     private final NegocioRepo negocioRepo;
     private final ProductoRepo productoRepo;
     private final DetalleVentaRepo detalleVentaRepo;
+    private final FacturaRepo facturaRepo;
 
     public VentaDto crearVenta (CrearVentaDto crearVentaDto, UUID idNegocio){
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -79,6 +83,8 @@ public class VentaService {
                     venta = new Venta();
 
                     venta.setActivo(true);
+                    venta.setTerminado(false);
+                    venta.setTieneFactura(false);
                     venta.setTotalVenta(0.0);
                     venta.setNegocio(productoOpt.get().getNegocio());
                     venta.setDetalleVentas(new ArrayList<>());
@@ -139,6 +145,7 @@ public class VentaService {
             Optional<Venta> venta = ventaRepo.findById(idVenta);
             if (usuario.isPresent()){
                 venta.get().setActivo(false);
+                venta.get().setTieneFactura(false);
                 venta.get().setFecha(LocalDate.now());
                 venta.get().getDetalleVentas().stream().map(detalleVenta -> {
                     detalleVenta.getProdcuto().setStock(detalleVenta.getProdcuto().getStock()-detalleVenta.getCantidad());
@@ -149,6 +156,9 @@ public class VentaService {
                 Negocio negocio = venta.get().getNegocio();
                 negocio.getVentas().add(venta.get());
                 negocioRepo.save(negocio);
+
+
+
                 return VentaDto.of(venta.get());
             }
         }
@@ -374,6 +384,242 @@ public class VentaService {
 
         // Devolver el resultado, que incluye el nombre del día y el total de ventas
         return "El día con más ventas fue: " + diaConMasVentas.getKey() + " con un total de " + diaConMasVentas.getValue() + " en ventas.";
+    }
+
+    public List<VentaDto> verVentasSinFacturas(UUID idNegocio){
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof UserDetails) {
+            String nombre= ((UserDetails)principal).getUsername();
+            Optional<Usuario> usuario = usuarioRepo.findByEmailIgnoreCase(nombre);
+            Optional<Negocio> negocio = negocioRepo.findById(idNegocio);
+            if (usuario.isPresent()){
+               List<Venta> ventas = negocio.get().getVentas();
+               List<VentaDto> ventaDtos = ventas.stream().filter(venta -> !venta.isTieneFactura()).map(VentaDto::of).collect(Collectors.toList());
+               return ventaDtos;
+
+            }
+        }
+
+        return null;
+    }
+
+    public List<VentaDto> verVentasFacturadas(UUID idNegocio){
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof UserDetails) {
+            String nombre= ((UserDetails)principal).getUsername();
+            Optional<Usuario> usuario = usuarioRepo.findByEmailIgnoreCase(nombre);
+            Optional<Negocio> negocio = negocioRepo.findById(idNegocio);
+            if (usuario.isPresent()){
+                List<Venta> ventas = negocio.get().getVentas();
+                List<VentaDto> ventaDtos = ventas.stream().filter(venta -> venta.isTieneFactura()).map(VentaDto::of).collect(Collectors.toList());
+                return ventaDtos;
+
+            }
+        }
+
+        return null;
+    }
+    public VentaDto volverAgregarProductoAVenta(UUID idProducto,UUID idV) {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof UserDetails) {
+            String nombre = ((UserDetails) principal).getUsername();
+            Optional<Usuario> usuarioOpt = usuarioRepo.findByEmailIgnoreCase(nombre);
+
+            if (usuarioOpt.isPresent()) {
+
+
+                // Buscar la venta activa del usuario basada en el atributo "activo"
+                Optional<Venta> ventaOpt = ventaRepo.findById(idV);
+                Optional<Producto> productoOpt = productoRepo.findById(idProducto);
+
+                Venta venta;
+                if (ventaOpt.isPresent()) {
+                    venta = ventaOpt.get();
+                } else {
+                    // Si no hay una venta activa, crear una nueva
+                    venta = new Venta();
+
+                    venta.setActivo(true);
+                    venta.setTerminado(false);
+                    venta.setTieneFactura(false);
+                    venta.setTotalVenta(0.0);
+                    venta.setNegocio(productoOpt.get().getNegocio());
+                    venta.setDetalleVentas(new ArrayList<>());
+                    venta.setActivo(true);
+
+                    venta = ventaRepo.save(venta);
+                }
+
+
+                if (productoOpt.isPresent()) {
+                    Producto producto = productoOpt.get();
+
+                    // Buscar si el producto ya está en la venta
+                    Optional<DetalleVenta> detalleExistente = venta.getDetalleVentas().stream()
+                            .filter(detalle -> detalle.getProdcuto().equals(producto))
+                            .findFirst();
+
+                    if (detalleExistente.isPresent()) {
+                        // Si el producto ya está en la venta, aumentar la cantidad y recalcular el total
+                        DetalleVenta detalle = detalleExistente.get();
+                        int nuevaCantidad = detalle.getCantidad() + 1;
+                        detalle.setCantidad(nuevaCantidad);
+                        detalle.setTotal(detalle.getCantidad() * producto.getPrecio());
+                        detalleVentaRepo.save(detalle);
+                    } else {
+                        // Si no está en la venta, crear un nuevo detalle de venta
+                        DetalleVenta nuevoDetalle = new DetalleVenta();
+                        nuevoDetalle.setVenta(venta);
+                        nuevoDetalle.setProdcuto(producto);
+                        nuevoDetalle.setCantidad(1);
+
+                        nuevoDetalle.setTotal(producto.getPrecio());
+                        detalleVentaRepo.save(nuevoDetalle);
+                        venta.getDetalleVentas().add(nuevoDetalle);
+                    }
+
+                    // Recalcular el total de la venta
+                    double totalVenta = venta.getDetalleVentas().stream()
+                            .mapToDouble(DetalleVenta::getTotal)
+                            .sum();
+                    venta.setTotalVenta(totalVenta);
+                    ventaRepo.save(venta);
+
+                    return VentaDto.of(venta);
+                }
+            }
+        }
+        throw new RuntimeException("No autenticado.");
+    }
+
+
+    public VentaDto editarVenta(UUID idVenta,UUID idProducto){
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof UserDetails) {
+            String nombre= ((UserDetails)principal).getUsername();
+            Optional<Usuario> usuario = usuarioRepo.findByEmailIgnoreCase(nombre);
+            Optional<Venta> venta = ventaRepo.findById(idVenta);
+            if (usuario.isPresent()){
+               if (!venta.get().isTieneFactura()){
+                  VentaDto ventaDto = volverAgregarProductoAVenta(idProducto,idVenta);
+
+                  return ventaDto;
+               }
+
+            }
+        }
+
+        return null;
+    }
+
+    public List<VentaDto> verTodasVentas(UUID idNgeocio){
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof UserDetails) {
+            String nombre= ((UserDetails)principal).getUsername();
+            Optional<Usuario> usuario = usuarioRepo.findByEmailIgnoreCase(nombre);
+            Optional<Negocio> negocio = negocioRepo.findById(idNgeocio);
+            if (usuario.isPresent()){
+                List<Venta> ventas = negocio.get().getVentas();
+                List<VentaDto> ventaDtos = ventas.stream().map(VentaDto::of).collect(Collectors.toList());
+                return ventaDtos;
+
+            }
+        }
+
+        return null;
+    }
+
+
+    public List<VentaDto> getVentasByFecha(FiltrarVentaPorFechaDTo fecha, UUID idNgeocio) {
+
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof UserDetails) {
+            String nombre= ((UserDetails)principal).getUsername();
+            Optional<Usuario> usuario = usuarioRepo.findByEmailIgnoreCase(nombre);
+            Optional<Negocio> negocio = negocioRepo.findById(idNgeocio);
+            if (usuario.isPresent()){
+                List<Venta> ventas = negocio.get().getVentas();
+                return ventas.stream()
+                        .filter(venta -> venta.getFecha().equals(fecha.fecha()))
+                        .map(VentaDto::of)
+                        .collect(Collectors.toList());
+
+            }
+        }
+
+        return null;
+
+    }
+
+    public List<VentaDto> getVentasConFactura(UUID idNgeocio) {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof UserDetails) {
+            String nombre= ((UserDetails)principal).getUsername();
+            Optional<Usuario> usuario = usuarioRepo.findByEmailIgnoreCase(nombre);
+            Optional<Negocio> negocio = negocioRepo.findById(idNgeocio);
+            if (usuario.isPresent()){
+                List<Venta> ventas = negocio.get().getVentas();
+                return ventas.stream()
+                        .filter(Venta::isTieneFactura)
+                        .map(VentaDto::of)
+                        .collect(Collectors.toList());
+
+            }
+        }
+
+        return null;
+
+    }
+
+    public List<VentaDto> getVentasNoTerminadas(UUID idNgeocio) {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof UserDetails) {
+            String nombre= ((UserDetails)principal).getUsername();
+            Optional<Usuario> usuario = usuarioRepo.findByEmailIgnoreCase(nombre);
+            Optional<Negocio> negocio = negocioRepo.findById(idNgeocio);
+            if (usuario.isPresent()){
+                List<Venta> ventas = negocio.get().getVentas();
+                return ventas.stream()
+                        .filter(venta -> !venta.isTerminado())
+                        .map(VentaDto::of)
+                        .collect(Collectors.toList());
+
+            }
+        }
+
+        return null;
+
+    }
+
+    public List<VentaDto> getVentasPorMayorTotalVenta(UUID idNegocio) {
+
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof UserDetails) {
+            String nombre= ((UserDetails)principal).getUsername();
+            Optional<Usuario> usuario = usuarioRepo.findByEmailIgnoreCase(nombre);
+            Optional<Negocio> negocio = negocioRepo.findById(idNegocio);
+            if (usuario.isPresent()){
+
+                List<Venta> ventas = negocio.get().getVentas();
+                return ventas.stream()
+                        .sorted((v1, v2) -> Double.compare(v2.getTotalVenta(), v1.getTotalVenta()))
+                        .map(VentaDto::of)
+                        .collect(Collectors.toList());
+
+            }
+        }
+
+        return null;
+
     }
 
 

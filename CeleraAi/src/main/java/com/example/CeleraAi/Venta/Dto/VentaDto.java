@@ -13,7 +13,9 @@ public record VentaDto(UUID id,
                        LocalDate fecha,
                        double total,
                        String metodoPago,
-                       boolean activo) {
+                       boolean activo,
+                       boolean terminado,
+                       boolean factura) {
     public static VentaDto of (Venta v){
         return new VentaDto(
                 v.getId(),
@@ -21,7 +23,9 @@ public record VentaDto(UUID id,
                 v.getFecha(),
                 v.getTotalVenta(),
                 v.getMetodoPago(),
-                v.isActivo()
+                v.isActivo(),
+                v.isTerminado(),
+                v.isTieneFactura()
         );
     }
 }

@@ -10,6 +10,6 @@ INSERT INTO administrador_roles ( roles,administrador_id) VALUES (1,'a23c61eb-4a
 INSERT INTO categorias (id,nombre)values('f1ba028f-e9df-4b76-9970-c0a32a115547','panaderia');
 
 
-INSERT INTO negocio (id, nombre, categorias_id, numero_empleados, telefono, email, ciudad, pais, sitioweb,usuario_id) values ('d7817739-fdf0-4300-b620-00bacf17c99e', 'ElPati', 'f1ba028f-e9df-4b76-9970-c0a32a115547', 15, '574573', 'hola@gmail.com', 'sevilla', 'España', 'ElPati.com','5d818565-99f9-4d80-920e-8259c6ecb8e6');
+INSERT INTO negocio (id, nombre, categorias_id, numero_empleados, telefono, email, ciudad, pais, sitioweb,usuario_id,cid) values ('d7817739-fdf0-4300-b620-00bacf17c99e', 'ElPati', 'f1ba028f-e9df-4b76-9970-c0a32a115547', 15, '574573', 'hola@gmail.com', 'sevilla', 'España', 'ElPati.com','5d818565-99f9-4d80-920e-8259c6ecb8e6','B12345678');
 
 

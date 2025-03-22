@@ -20,4 +20,5 @@ public interface VentaRepo extends JpaRepository<Venta, UUID> {
     List<Venta> findByNegocioId(UUID id);
 
 
+
 }

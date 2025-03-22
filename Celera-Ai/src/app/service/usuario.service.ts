@@ -9,6 +9,9 @@ import { VentasSemanales } from '../model/ventas-semana';
 import { VentasMes } from '../model/venta-mes';
 import { TodosLosProductos } from '../model/todos-productos';
 import { VentasResponse } from '../model/ventas-dto';
+import { FacturaResponse } from '../model/factura-response';
+import { VerFacturas } from '../model/ver-facturas';
+import { ChatGPTResponse } from '../model/gpt-response';
 
 
 @Injectable({
@@ -207,6 +210,128 @@ export class UsuarioService {
       }
     });
   }
+
+  crearFactura(id:string,numeroFacura:string,cliente:string,impuestos:number,numeroAlbaran:number):Observable<FacturaResponse>{
+    let token = localStorage.getItem('TOKEN');
+    return this.http.post<FacturaResponse>(`${this.url}/usuario/crear/factura/${id}`,{
+      "numeroFacura": `${numeroFacura}`,
+      "cliente": `${cliente}`,
+      "impuestos": `${impuestos}`,
+      "numeroAlbaran": `${numeroAlbaran}`
+      
+    }, {
+      headers: {
+        accept: 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    });
+  }
+
+  ventasSinFacturas(id:string):Observable<VentaDto[]>{
+    let token = localStorage.getItem('TOKEN');
+    return this.http.get<VentaDto[]>(`${this.url}/usuario/ver/ventas/sin/factura/${id}`, {
+      headers: {
+        accept: 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    });
+  }
+
+  VerFacturas(id:string):Observable<VerFacturas[]>{
+    let token = localStorage.getItem('TOKEN');
+    return this.http.get<VerFacturas[]>(`${this.url}/usuario/ver/facturas/${id}`, {
+      headers: {
+        accept: 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    });
+  }
+
+  VerDetallesFacturas(id:string):Observable<VerFacturas>{
+    let token = localStorage.getItem('TOKEN');
+    return this.http.get<VerFacturas>(`${this.url}/usuario/ver/detalles/de/factura/${id}`, {
+      headers: {
+        accept: 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    });
+  }
+
+  preguntarAsistente(pregunta:string,id:string):Observable<ChatGPTResponse>{
+    let token = localStorage.getItem('TOKEN');
+    return this.http.post<ChatGPTResponse>(`${this.url}/usuario/generarRecomendaciones/${id}`,{
+      "pregunta": `${pregunta}`,
+    }, {
+      headers: {
+        accept: 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    });
+  }
+
+  verTodasVentas(id:string):Observable<VentaDto[]>{
+    let token = localStorage.getItem('TOKEN');
+    return this.http.get<VentaDto[]>(`${this.url}/usuario/ver/todas/ventas/${id}`, {
+      headers: {
+        accept: 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    });
+  }
+
+  editarVenta(idV:string,idP:string):Observable<VentaDto>{
+    let token = localStorage.getItem('TOKEN');
+    return this.http.post<VentaDto>(`${this.url}/usuario/añadir/mas/productos/ventas/${idV}/${idP}`,{
+      
+    }, {
+      headers: {
+        accept: 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    });
+  }
+
+ //hehehe
+
+ ventasPorDate(id:string):Observable<VentaDto[]>{
+  let token = localStorage.getItem('TOKEN');
+  return this.http.get<VentaDto[]>(`${this.url}/usuario/filtrar/ventas/date/${id}`, {
+    headers: {
+      accept: 'application/json',
+      'Authorization': `Bearer ${token}`
+    }
+  });
+}
+
+ventasConFactura(id:string):Observable<VentaDto[]>{
+  let token = localStorage.getItem('TOKEN');
+  return this.http.get<VentaDto[]>(`${this.url}/usuario/filtrar/ventas/factura/${id}`, {
+    headers: {
+      accept: 'application/json',
+      'Authorization': `Bearer ${token}`
+    }
+  });
+}
+
+ventasEditables(id:string):Observable<VentaDto[]>{
+  let token = localStorage.getItem('TOKEN');
+  return this.http.get<VentaDto[]>(`${this.url}/usuario/filtrar/ventas/editable/${id}`, {
+    headers: {
+      accept: 'application/json',
+      'Authorization': `Bearer ${token}`
+    }
+  });
+}
+
+ventasConTotalVentas(id:string):Observable<VentaDto[]>{
+  let token = localStorage.getItem('TOKEN');
+  return this.http.get<VentaDto[]>(`${this.url}/usuario/filtrar/ventas/total/${id}`, {
+    headers: {
+      accept: 'application/json',
+      'Authorization': `Bearer ${token}`
+    }
+  });
+}
 
 
 

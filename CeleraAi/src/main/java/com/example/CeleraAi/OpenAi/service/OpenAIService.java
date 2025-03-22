@@ -1,7 +1,9 @@
 package com.example.CeleraAi.OpenAi.service;
 
+import com.example.CeleraAi.Facturacion.model.Factura;
 import com.example.CeleraAi.Negocio.model.Negocio;
 import com.example.CeleraAi.Negocio.repositorio.NegocioRepo;
+import com.example.CeleraAi.OpenAi.PreguntaUsuarioDto;
 import com.example.CeleraAi.Producto.model.Producto;
 import com.example.CeleraAi.Producto.repositorio.ProductoRepo;
 import com.example.CeleraAi.Venta.Dto.VentaDto;
@@ -52,7 +54,7 @@ public class OpenAIService {
         return "No se encontró al usuario.";
     }
 
-    public String generarRecomendaciones(String mensajeUsuario, UUID idNegocio) {
+    public String generarRecomendaciones(PreguntaUsuarioDto mensajeUsuario, UUID idNegocio) {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         if (principal instanceof UserDetails) {
@@ -64,6 +66,7 @@ public class OpenAIService {
                 // Obtener las ventas y productos del negocio
                 List<Venta> ventas = negocio.get().getVentas();
                 List<Producto> productos = negocio.get().getProdcutos();
+                List<Factura> facturas = negocio.get().getFacturas();
 
                 // Construir el mensaje para las ventas
                 StringBuilder ventasInfo = new StringBuilder("Ventas del usuario:\n");
@@ -96,19 +99,38 @@ public class OpenAIService {
                     productosInfo.append("El usuario no tiene productos registrados.");
                 }
 
+                StringBuilder facturasInfo = new StringBuilder("Facturas disponibles:\n");
+                for (Factura factura : facturas) {
+                    productosInfo.append("Factura: ").append(factura.getNumeroFactura())
+                            .append(", Cliente: ").append(factura.getCliente())
+                            .append(", Impuestos: ").append(factura.getImpuestos())
+                            .append(", Total: ").append(factura.getTotal())
+                            .append(", Subtotal: ").append(factura.getSubtotal())
+                            .append(", Ventas: ").append(factura.getVentas().getFecha())
+                            .append(", Detalles de ventas: ").append(factura.getVentas().getDetalleVentas().toString())
+                            .append("\n");
+                }
+
+                if (facturas.isEmpty()) {
+                    productosInfo.append("El usuario no tiene productos registrados.");
+                }
+
+
                 // Crear el mensaje final para enviar a OpenAI
 
                 String mensaje = "Usuario: " + nombre + "\n" +
                         "Ventas: " + ventasInfo.toString() +
                         "Productos: " + productosInfo.toString() +
                         "Negocio"+ negocio.get().getCategorias()+
-                        "\nBasado en la pregunta, "+mensajeUsuario;
+                        "Facturas"+ facturasInfo.toString()+
+                        "\nBasado en la pregunta, "+mensajeUsuario.pregunta();
 
                 // Enviar mensaje a OpenAI
                 System.out.println("Ventas: " + ventas.size());
                 System.out.println("Productos: " + productos.size());
 
                 return consultarAPIOpenAI(mensaje);
+
             }
         }
 

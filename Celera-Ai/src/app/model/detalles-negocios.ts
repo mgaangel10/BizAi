@@ -27,6 +27,8 @@ export interface VentaDto {
     total:         number;
     metodoPago:    null;
     activo:        boolean;
+    terminado:        boolean;
+    factura:        boolean;
 }
 
 export interface DetalleVenta {

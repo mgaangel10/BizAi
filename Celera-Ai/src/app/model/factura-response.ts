@@ -1,12 +1,20 @@
-export interface VentasResponse {
+export interface FacturaResponse {
+    id:            string;
+    numeroFactura: string;
+    cliente:       string;
+    impuestos:     number;
+    total:         number;
+    subtotal:      number;
+    ventaDto:      VentaDto;
+}
+
+export interface VentaDto {
     id:            string;
     detalleVentas: DetalleVenta[];
     fecha:         Date;
     total:         number;
     metodoPago:    null;
     activo:        boolean;
-    terminado:        boolean;
-    factura:        boolean;
 }
 
 export interface DetalleVenta {

@@ -1,6 +1,7 @@
 package com.example.CeleraAi.Producto.model;
 
 import com.example.CeleraAi.Negocio.model.Negocio;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,6 +12,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @Data
 @Builder
+@ToString(exclude = {"categorias", "productos"})  // Evita recursión infinita
+
 public class Producto {
 
     @Id
@@ -21,7 +24,9 @@ public class Producto {
     private double precio;
     private int stock;
     private double precioProveedor;
+
     @ManyToOne
+    @JsonIgnore
     private Negocio negocio;
 
 

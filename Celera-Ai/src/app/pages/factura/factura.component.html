@@ -1,0 +1,183 @@
+<div class="d-flex w-100">
+
+
+    <div class="w-25   align-content-center text-center" style="height: 100vh; background-color: rgb(113, 209, 145); border-top-right-radius: 20px; border-bottom-right-radius: 15px;">
+        <mat-card appearance="outlined" class="mb-5 w-50 mx-auto">
+            <div class="h-50  ">
+                <mat-card-content class="w-100"><strong>{{nombre}}</strong></mat-card-content>
+            </div>
+            
+          </mat-card>
+          <div class="h-50">
+              
+              <app-header></app-header>
+          </div>
+    
+    </div>
+    <div class="w-100">
+        <h3 class="text-center mb-5 ">Ventas Sin Facturar</h3>
+        <div class="w-75 mx-auto card">
+            <table class="table table-hover text-center">
+                <thead>
+                  <tr>
+                    
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Total</th>
+                    <th scope="col">Activa</th>
+                    <th scope="col">Facturada</th>
+                  </tr>
+                </thead>
+                <tbody *ngFor="let v of ventas">
+                  <tr (click)="open(content,v.id)">
+                    
+                    <td>{{v.fecha}}</td>
+                    <td>{{v.total}}€</td>
+                    <td><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="green" class="bi bi-check" viewBox="0 0 16 16">
+                        <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
+                      </svg></td>
+                    <td><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-x-lg" viewBox="0 0 16 16">
+                        <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+                      </svg></td>
+                    
+                  </tr>
+                 
+                </tbody>
+              </table>
+              <ng-template #content let-c="close" let-d="dismiss">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="modal-basic-title">Hi there!</h4>
+                    <button type="button" class="btn-close" aria-label="Close" (click)="d('Cross click')"></button>
+                </div>
+                <div class="modal-body">
+                    <form [formGroup]="profileLogin" (ngSubmit)="login()">
+                        <div class="mb-3 mx-auto w-50 mt-5">
+                          <label for="emailLog" class="form-label">Numero de factura</label>
+                          <input type="text" class="form-control" id="emailLog" aria-describedby="emailHelp" formControlName="numeroFacura">
+                    
+                    
+                        </div>
+                        <div class="mb-3 mx-auto w-50">
+                          <label for="emailLog" class="form-label">Numero de albaran</label>
+                          <input type="number" class="form-control" id="emailLog" aria-describedby="emailHelp" formControlName="numeroAlbaran">
+                    
+                    
+                        </div>
+                        <div class="mb-3 mx-auto w-50">
+                          <label for="exampleInputPassword1" class="form-label">Cliente</label>
+                          <input type="text" class="form-control" id="exampleInputPassword1" formControlName="cliente">
+                        </div>
+                        <div class="mb-3 mx-auto w-50">
+                            <label for="exampleInputPassword1" class="form-label">IVA</label>
+                            <input type="number" class="form-control" id="exampleInputPassword1" formControlName="impuestos">
+                          </div>
+                        <div class="mb-3 mx-auto w-50">
+                          <button type="submit " class="btn btn-primary  w-100">Submit</button>
+                        </div>
+                    
+                      </form>
+                </div>
+                <div class="modal-footer">
+                    
+                </div>
+            </ng-template>
+            
+            
+
+        </div>
+
+        <h3 class="text-center mt-5">Ventas Facturadas</h3>
+        <div class="w-75 mx-auto card">
+            <table class="table table-hover text-center">
+                <thead>
+                  <tr>
+                    
+                    <th scope="col">Numero Factura</th>
+                    <th scope="col">Cliente</th>
+                    <th scope="col">Total</th>
+                    <th scope="col">Subtotal + IVA</th>
+                  </tr>
+                </thead>
+                <tbody *ngFor="let v of facturas">
+                  <tr (click)="open2(detallesF,v.id)">
+                    
+                    <td>{{v.numeroFactura}}</td>
+                    <td>{{v.cliente}}</td>
+                    <td>{{v.total}}€</td>
+                    <td>{{v.subtotal}}€</td>
+                    
+                  </tr>
+                 
+                </tbody>
+              </table>
+            
+            <ng-template #detallesF let-c="close" let-d="dismiss">
+                <div class="modal-header">
+                  <h4 class="modal-title" id="modal-basic-title">Detalles de Factura</h4>
+                  <button type="button" class="btn-close" aria-label="Close" (click)="d('Cross click')"></button>
+                </div>
+              
+                <div class="modal-body">
+                  <!-- Itera sobre el array de facturas -->
+                  <div  class="mb-3">
+                    <h5><strong>Número de Factura:</strong> {{ detallesFactura.numeroFactura }}</h5>
+                    <p><strong>Cliente:</strong> {{ detallesFactura.cliente }}</p>
+                    <p><strong>Empresa Emisora:</strong> {{ detallesFactura.nombreEmpresa }}</p>
+                    <p><strong>CID:</strong> {{ detallesFactura.cid }}</p>
+                    <p><strong>Total:</strong> ${{ detallesFactura.total }}</p>
+                    <p><strong>Impuestos:</strong> {{ detallesFactura.impuestos }}%</p>
+                    <p><strong>Subtotal:</strong> {{ detallesFactura.subtotal }}€</p>
+                    <hr>
+                    <!-- Información de la venta -->
+                    <div class="mb-3">
+                      <h6><strong>Detalles de la Venta:</strong></h6>
+                      <p><strong>Fecha de la Venta:</strong> {{ detallesFactura.ventaDto.fecha | date: 'dd/MM/yyyy' }}</p>
+                      <p><strong>Total de la Venta:</strong> {{ detallesFactura.ventaDto.total }}€</p>
+                      <p><strong>Método de Pago:</strong> {{ detallesFactura.ventaDto.metodoPago || 'No especificado' }}</p>
+                      <p><strong>Estado:</strong> {{ detallesFactura.ventaDto.activo ? 'Activo' : 'Inactivo' }}</p>
+                    </div>
+                    <hr>
+                    <!-- Detalles de los productos en la venta -->
+                    <div class="mb-3">
+                      <h6><strong>Productos en la Venta:</strong></h6>
+                      <table class="table">
+                        <thead>
+                          <tr>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th>Precio</th>
+                            <th>Total</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let detalle of detallesFactura.ventaDto.detalleVentas">
+                            <td>{{ detalle.nombreProducto }}</td>
+                            <td>{{ detalle.cantida }}</td>
+                            <td>{{ detalle.precioProducto }}€ + {{detallesFactura.impuestos}}%</td>
+                            <td>{{ detalle.precioProducto * detalle.cantida }}€</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" (click)="d('Close click')">Cerrar</button>
+                </div>
+              </ng-template>
+              
+            
+            
+
+        </div>
+
+
+
+    </div>
+
+
+
+
+
+</div>
+

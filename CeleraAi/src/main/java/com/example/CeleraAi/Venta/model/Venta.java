@@ -1,11 +1,11 @@
 package com.example.CeleraAi.Venta.model;
 
+import com.example.CeleraAi.Facturacion.model.Factura;
+import com.example.CeleraAi.Finanzas.model.Finanzas;
 import com.example.CeleraAi.Negocio.model.Negocio;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -16,6 +16,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @Data
 @Builder
+@ToString(exclude = {"negocio", "detalleVentas"})  // Excluye las relaciones recursivas
+
 public class Venta {
 
     @Id
@@ -25,12 +27,23 @@ public class Venta {
     private LocalDate fecha;
     private double totalVenta;
     private boolean activo;
+    private boolean terminado;
+    private boolean tieneFactura;
+
+    @ManyToOne
+    private Finanzas finanzas;
+
+    @ManyToOne
+    @JsonIgnore
+    private Factura factura;
 
     @ManyToOne
     @JoinColumn(name = "negocio_id")
+    @JsonIgnore
     private Negocio negocio;
 
     @OneToMany
+    @JsonIgnore
     private List<DetalleVenta> detalleVentas;
 
 

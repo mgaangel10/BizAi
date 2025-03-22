@@ -9,6 +9,8 @@ import { FormsModule } from '@angular/forms';
 import {MatChipsModule} from '@angular/material/chips';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { MarkdownModule } from 'ngx-markdown';
+
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { InicioSesionPageComponent } from './pages/inicio-sesion-page/inicio-sesion-page.component';
 import { HomePageComponent } from './pages/home-page/home-page.component';
@@ -18,6 +20,9 @@ import { DashBoardComponent } from './pages/dash-board/dash-board.component';
 import { CrearNegocioComponent } from './pages/crear-negocio/crear-negocio.component';
 import { InventarioComponent } from './pages/inventario/inventario.component';
 import { VentasComponent } from './pages/ventas/ventas.component';
+import { EstadisticasComponent } from './pages/estadisticas/estadisticas.component';
+import { FacturaComponent } from './pages/factura/factura.component';
+import { AsistenteComponent } from './pages/asistente/asistente.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +34,10 @@ import { VentasComponent } from './pages/ventas/ventas.component';
     DashBoardComponent,
     CrearNegocioComponent,
     InventarioComponent,
-    VentasComponent
+    VentasComponent,
+    EstadisticasComponent,
+    FacturaComponent,
+    AsistenteComponent
   ],
   imports: [
     BrowserModule,
@@ -37,6 +45,7 @@ import { VentasComponent } from './pages/ventas/ventas.component';
     AppRoutingModule,
     ReactiveFormsModule,
     MatCardModule,
+    MarkdownModule,
     MatChipsModule,
     NgxChartsModule,
     MatProgressBarModule,
