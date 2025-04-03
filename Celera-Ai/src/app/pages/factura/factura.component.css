@@ -1,0 +1,44 @@
+.card {
+    border-radius: 10px;
+  }
+  .table {
+    border-radius: 10px;
+  }
+  .table th, .table td {
+    padding: 12px;
+    font-size: 1rem;
+  }
+  .cursor-pointer {
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+  .cursor-pointer:hover {
+    transform: scale(1.03);
+  }
+  .table-hover tbody tr:hover {
+    background-color: #f1f1f1;
+  }
+  .text-primary {
+    color: #007bff !important;
+  }
+
+  .business-card-gold {
+    border-radius: 16px;
+    background: linear-gradient(135deg, #fffbe6, #fdf2cc);
+    border: 1px solid #f8e4a0;
+    box-shadow: 0 8px 20px rgba(212, 176, 72, 0.15);
+    transition: all 0.25s ease-in-out;
+  }
+  
+  .business-card-gold:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(212, 176, 72, 0.25);
+  }
+
+  .icon-circle {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+  }
+  

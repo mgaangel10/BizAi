@@ -2,10 +2,7 @@ package com.example.CeleraAi.users.controller;
 
 
 import com.example.CeleraAi.security.jwt.JwtProvider;
-import com.example.CeleraAi.users.Dto.JwtUserResponse;
-import com.example.CeleraAi.users.Dto.PostCrearUserDto;
-import com.example.CeleraAi.users.Dto.PostLogin;
-import com.example.CeleraAi.users.Dto.PostRegistroDto;
+import com.example.CeleraAi.users.Dto.*;
 import com.example.CeleraAi.users.model.Usuario;
 import com.example.CeleraAi.users.service.UsuarioService;
 import lombok.NoArgsConstructor;
@@ -56,6 +53,12 @@ public class UsuarioController {
         Usuario usuario = (Usuario) authentication.getPrincipal();
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(JwtUserResponse.ofUsuario(usuario, token));
+    }
+
+    @GetMapping("usuario/informacion/usuario")
+    public ResponseEntity<GetUsuario> getUsuario(){
+        GetUsuario getUsuario = usuarioService.getUsuario();
+        return ResponseEntity.ok(getUsuario);
     }
 
 

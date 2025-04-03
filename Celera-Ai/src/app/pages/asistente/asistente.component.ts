@@ -25,12 +25,14 @@ export class AsistenteComponent implements OnInit{
   });
 
   preguntar() {
+    
     console.log('Datos enviados al servidor:', this.profileLogin.value);
     let id = localStorage.getItem('IDNEGOCIO');
     this.service.preguntarAsistente(this.profileLogin.value.pregunta!, id!)
-      .subscribe((response: any) => {
-        if (response && response.choices && response.choices.length > 0) {
-          this.respuesta = response.choices[0].message.content;
+      .subscribe((response: ChatGPTResponse) => {
+
+        if (response && response.mensaje && response.mensaje != null) {
+          this.respuesta = response;
         }
       });
   }

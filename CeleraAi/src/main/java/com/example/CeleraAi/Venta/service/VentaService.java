@@ -8,6 +8,7 @@ import com.example.CeleraAi.Negocio.repositorio.NegocioRepo;
 import com.example.CeleraAi.Producto.model.Producto;
 import com.example.CeleraAi.Producto.repositorio.ProductoRepo;
 import com.example.CeleraAi.Venta.Dto.CrearVentaDto;
+import com.example.CeleraAi.Venta.Dto.DetalleVentaDTo;
 import com.example.CeleraAi.Venta.Dto.FiltrarVentaPorFechaDTo;
 import com.example.CeleraAi.Venta.Dto.VentaDto;
 import com.example.CeleraAi.Venta.model.DetalleVenta;
@@ -88,7 +89,7 @@ public class VentaService {
                     venta.setTotalVenta(0.0);
                     venta.setNegocio(productoOpt.get().getNegocio());
                     venta.setDetalleVentas(new ArrayList<>());
-                    venta.setActivo(true);
+
 
                     venta = ventaRepo.save(venta);
                 }
@@ -133,6 +134,91 @@ public class VentaService {
             }
         }
         throw new RuntimeException("No autenticado.");
+    }
+
+    public void eliminarDetalleVenta(UUID id){
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof UserDetails) {
+            String nombre= ((UserDetails)principal).getUsername();
+            Optional<Usuario> usuario = usuarioRepo.findByEmailIgnoreCase(nombre);
+            Optional<DetalleVenta> detalleVenta = detalleVentaRepo.findById(id);
+            if (usuario.isPresent()){
+              detalleVentaRepo.delete(detalleVenta.get());
+
+
+
+
+            }
+        }
+
+
+    }
+
+    public VentaDto quitarUnaCntidad(UUID id){
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof UserDetails) {
+            String nombre= ((UserDetails)principal).getUsername();
+            Optional<Usuario> usuario = usuarioRepo.findByEmailIgnoreCase(nombre);
+            Optional<DetalleVenta> detalleVenta = detalleVentaRepo.findById(id);
+            if (usuario.isPresent()){
+               DetalleVenta detalleVenta1 = detalleVenta.get();
+               int cantidad = detalleVenta1.getCantidad() - 1;
+               if (cantidad > 0){
+                   detalleVenta1.setCantidad(cantidad);
+                   double total = cantidad * detalleVenta1.getProdcuto().getPrecio();
+                   detalleVenta1.setTotal(total);
+                   detalleVentaRepo.save(detalleVenta1);
+               }else {
+                   Venta venta = detalleVenta1.getVenta();
+                   // 🔥 Eliminar de la lista antes de borrar
+                   venta.getDetalleVentas().remove(detalleVenta1);
+                   detalleVentaRepo.delete(detalleVenta1);
+                   ventaRepo.save(venta);  // Guardar venta actualizada
+               }
+
+               Venta venta = detalleVenta1.getVenta();
+               double totalCarrito = venta.getDetalleVentas().stream()
+                       .mapToDouble(DetalleVenta::getTotal).sum();
+               venta.setTotalVenta(totalCarrito);
+               ventaRepo.save(venta);
+               return VentaDto.of(venta);
+
+
+
+
+
+            }
+        }
+
+        return null;
+    }
+
+    public VentaDto agregarCantidad(UUID id){
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof UserDetails) {
+            String nombre= ((UserDetails)principal).getUsername();
+            Optional<Usuario> usuario = usuarioRepo.findByEmailIgnoreCase(nombre);
+            Optional<DetalleVenta> detalleVenta = detalleVentaRepo.findById(id);
+            if (usuario.isPresent()){
+                DetalleVenta detalleVenta1 = detalleVenta.get();
+                int cantidad = detalleVenta1.getCantidad() + 1;
+               detalleVenta1.setCantidad(cantidad);
+               double total = cantidad * detalleVenta1.getProdcuto().getPrecio();
+               detalleVenta1.setTotal(total);
+               detalleVentaRepo.save(detalleVenta1);
+               Venta venta = detalleVenta1.getVenta();
+               double totalCarrito = venta.getDetalleVentas().stream().mapToDouble(DetalleVenta::getTotal).sum();
+               venta.setTotalVenta(totalCarrito);
+               ventaRepo.save(venta);
+               return VentaDto.of(venta);
+
+            }
+        }
+
+        return null;
     }
 
 
@@ -355,9 +441,17 @@ public class VentaService {
         if (principal instanceof UserDetails) {
             String nombre= ((UserDetails)principal).getUsername();
             Optional<Usuario> usuario = usuarioRepo.findByEmailIgnoreCase(nombre);
-            Optional<Venta> venta = ventaRepo.findById(id);
+            Optional<Negocio> negocio = negocioRepo.findById(id);
             if (usuario.isPresent()){
-              return VentaDto.of(venta.get());
+                Optional<Venta> ventaActiva = negocio.get().getVentas().stream()
+                        .filter(venta1 -> venta1.isActivo())  // Filtramos solo las ventas activas
+                        .findFirst();
+                if (ventaActiva.isPresent()){
+                    return VentaDto.of(ventaActiva.get());
+                }else {
+                    return VentaDto.of(null);
+                }
+
 
             }
         }
@@ -437,6 +531,8 @@ public class VentaService {
 
                 Venta venta;
                 if (ventaOpt.isPresent()) {
+                    ventaOpt.get().setActivo(true);
+                    ventaRepo.save(ventaOpt.get());
                     venta = ventaOpt.get();
                 } else {
                     // Si no hay una venta activa, crear una nueva
@@ -515,6 +611,78 @@ public class VentaService {
 
         return null;
     }
+    public double ingresos(UUID id){
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof UserDetails) {
+            String nombre= ((UserDetails)principal).getUsername();
+            Optional<Usuario> usuario = usuarioRepo.findByEmailIgnoreCase(nombre);
+            Optional<Negocio> negocio = negocioRepo.findById(id);
+            if (usuario.isPresent()){
+                List<Venta> ventas = negocio.get().getVentas();
+                double ingreso = ventas.stream().mapToDouble(Venta::getTotalVenta).sum();
+                return ingreso;
+
+            }
+        }
+
+        return 0;
+    }
+
+    public double gastos(UUID id){
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof UserDetails) {
+            String nombre= ((UserDetails)principal).getUsername();
+            Optional<Usuario> usuario = usuarioRepo.findByEmailIgnoreCase(nombre);
+            Optional<Negocio> negocio = negocioRepo.findById(id);
+            if (usuario.isPresent()){
+                List<Producto> productos = negocio.get().getProdcutos();
+                double gastos = productos.stream().mapToDouble(Producto::getPrecioProveedor).sum();
+                return gastos;
+
+
+            }
+        }
+
+        return 0;
+    }
+
+    public double beneficio(UUID id){
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof UserDetails) {
+            String nombre= ((UserDetails)principal).getUsername();
+            Optional<Usuario> usuario = usuarioRepo.findByEmailIgnoreCase(nombre);
+            Optional<Negocio> negocio = negocioRepo.findById(id);
+            if (usuario.isPresent()){
+            List<Venta> ventas = negocio.get().getVentas();
+            return ventas.stream().flatMap(venta -> venta.getDetalleVentas().stream()).mapToDouble(value -> (value.getProdcuto().getPrecio()-value.getProdcuto().getPrecioProveedor())*value.getCantidad()).sum();
+
+
+
+            }
+        }
+
+        return 0;
+    }
+
+    public VentaDto detallesVenta(UUID id){
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof UserDetails) {
+            String nombre= ((UserDetails)principal).getUsername();
+            Optional<Usuario> usuario = usuarioRepo.findByEmailIgnoreCase(nombre);
+            Optional<Venta> venta = ventaRepo.findById(id);
+            if (usuario.isPresent()){
+               return VentaDto.of(venta.get());
+
+
+            }
+        }
+
+        return null;
+    }
 
     public List<VentaDto> verTodasVentas(UUID idNgeocio){
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -525,7 +693,7 @@ public class VentaService {
             Optional<Negocio> negocio = negocioRepo.findById(idNgeocio);
             if (usuario.isPresent()){
                 List<Venta> ventas = negocio.get().getVentas();
-                List<VentaDto> ventaDtos = ventas.stream().map(VentaDto::of).collect(Collectors.toList());
+                List<VentaDto> ventaDtos = ventas.stream().filter(venta -> !venta.isActivo()).map(VentaDto::of).collect(Collectors.toList());
                 return ventaDtos;
 
             }

@@ -1,6 +1,9 @@
 package com.example.CeleraAi.users.service;
 
 
+import com.example.CeleraAi.Negocio.model.Negocio;
+import com.example.CeleraAi.Producto.Dto.ProductoDto;
+import com.example.CeleraAi.Producto.model.Producto;
 import com.example.CeleraAi.users.Dto.GetUsuario;
 import com.example.CeleraAi.users.Dto.PostCrearUserDto;
 import com.example.CeleraAi.users.Dto.PostLogin;
@@ -13,16 +16,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -63,9 +65,23 @@ public class UsuarioService {
     public Usuario createWithRole(PostCrearUserDto postCrearUserDto){
         return crearUsuario(postCrearUserDto,EnumSet.of(UserRoles.USER));
     }
-    public GetUsuario getUsuario(UUID uuid){
-        GetUsuario usuario = usuarioRepo.getUsuario(uuid);
-        return usuario;
+    public GetUsuario getUsuario(){
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (principal instanceof UserDetails) {
+            String nombre = ((UserDetails) principal).getUsername();
+            Optional<Usuario> usuario = usuarioRepo.findByEmailIgnoreCase(nombre);
+
+            // Verificar si el usuario existe
+            if (usuario.isPresent()) {
+                return GetUsuario.of(usuario.get());
+
+
+            } else {
+                System.out.println("Usuario no encontrado.");
+            }
+        }
+        return null;
 
     }
     public Usuario setearEnabled(PostLogin postCrearUserDto){

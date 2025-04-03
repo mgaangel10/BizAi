@@ -5,4 +5,34 @@
   .example-card-footer {
     padding: 16px;
   }
-  
+  .example-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  .btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+    font-weight: 600;
+  }
+
+  .btn-success:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+  }
+
+  mat-card-header {
+    background-color: #fafafa;
+    border-radius: 12px 12px 0 0;
+  }
+
+  .mat-chip {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+
+  .mat-chip-set {
+    display: flex;
+    justify-content: center;
+  }

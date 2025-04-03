@@ -35,6 +35,9 @@ export class DashBoardComponent implements OnInit{
     this.detallesNegocios();
     this.productosMasVendidos();
     this.ventasSemanales();
+    this.adaptarTamanioGrafico(); // 👈 importante
+    window.addEventListener('resize', this.adaptarTamanioGrafico.bind(this)); // 👈 evento para redimensionar
+
   }
 
   detallesNegocios() {
@@ -69,6 +72,12 @@ export class DashBoardComponent implements OnInit{
       });
     }
   }
+  getStockPercentage(stock: number): number {
+    const maxStock = 100; // ajusta si tienes un valor de referencia
+    return Math.min(100, (stock / maxStock) * 100);
+  }
+  
+  
 
   ventasSemanales() {
     let idNegocio = localStorage.getItem('IDNEGOCIO');
@@ -106,6 +115,17 @@ export class DashBoardComponent implements OnInit{
 
   actualizarYMaximo(event: any) {
     this.yMax = event.target.value;
+  }
+  adaptarTamanioGrafico() {
+    const width = window.innerWidth;
+  
+    if (width >= 1200) {
+      this.view = [700, 400];
+    } else if (width >= 768) {
+      this.view = [500, 300];
+    } else {
+      this.view = [350, 250];
+    }
   }
 
   // Datos de ventas (semanales o mensuales dependiendo del botón presionado)

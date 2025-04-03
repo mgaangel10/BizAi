@@ -16,7 +16,21 @@ public record VentaDto(UUID id,
                        boolean activo,
                        boolean terminado,
                        boolean factura) {
-    public static VentaDto of (Venta v){
+    public static VentaDto of(Venta v) {
+        if (v == null) {
+            // Devuelve un DTO vacío o un DTO con valores predeterminados en caso de que la venta sea null
+            return new VentaDto(
+                    null, // id es null
+                    List.of(), // Lista vacía de detalleVentas
+                    null, // fecha es null
+                    0.0, // total es 0
+                    "", // metodoPago es vacío
+                    false, // activo es false
+                    false, // terminado es false
+                    false // factura es false
+            );
+        }
+
         return new VentaDto(
                 v.getId(),
                 v.getDetalleVentas().stream().map(DetalleVentaDTo::of).collect(Collectors.toList()),
@@ -28,4 +42,5 @@ public record VentaDto(UUID id,
                 v.isTieneFactura()
         );
     }
+
 }

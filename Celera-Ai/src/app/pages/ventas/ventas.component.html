@@ -1,13 +1,28 @@
 
 <div class="w-100 d-flex">
-    <div class="w-25   align-content-center text-center" style="height: 100vh; background-color: rgb(113, 209, 145); border-top-right-radius: 20px; border-bottom-right-radius: 15px;">
-        <mat-card appearance="outlined" class="mb-5 w-50 mx-auto">
-            <div class="h-50  ">
-                <mat-card-content class="w-100"><strong>{{nombre}}</strong></mat-card-content>
-            </div>
-            
-          </mat-card>
-          <div class="h-50">
+    <div class="w-25   align-content-center text-center" style="height: 100vh; background: linear-gradient(135deg, #f0f4ff, #e4f7ff);  border-top-right-radius: 20px; border-bottom-right-radius: 15px;">
+      <mat-card 
+      class="business-card-gold mb-5 mx-auto"
+      style="max-width: 500px; cursor: pointer;"
+      [routerLink]="['/home']">
+    
+      <div class="p-4 d-flex align-items-center justify-content-between">
+        <!-- Info del negocio -->
+        <div class="d-flex flex-column">
+          <span class="text-uppercase small mb-1 text-dark" style="letter-spacing: 1px;">Tu negocio</span>
+          <h4 class="mb-0 fw-bold" style="color: #7D6608;">{{ nombre }}</h4>
+        </div>
+    
+        <!-- Ícono navegación -->
+        <div class="d-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm"
+             style="width: 45px; height: 45px;">
+             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
+            </svg>
+        </div>
+      </div>
+    </mat-card>
+          <div class="h-75">
               
               <app-header></app-header>
           </div>
@@ -23,7 +38,7 @@
         <div class="text-center mt-5 mb-3">
           
           
-          <button class="btn  btn-success" (click)="open(content)">Nueva venta</button>
+          <button class="btn btn-info px-4 py-2 shadow-sm btn-premium pastel-crear" (click)="open(content)">Nueva venta</button>
 
         </div>
         <div class="w-50 mx-auto" >
@@ -42,7 +57,7 @@
                           <th scope="col">Nombre</th>
                           <th scope="col">Precio</th>
                           <th scope="col">Cantidad</th>
-                          <th scope="col">Eliminar linea</th>
+                          <th scope="col">Añadir/Quitar</th>
 
                         </tr>
                       </thead>
@@ -50,16 +65,14 @@
                         <tr>
                           <th>{{v.nombreProducto}}</th>
                           <th>{{v.precioProducto}}€</th>
-                          <th >{{v.cantida}} <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus me-2 ms-2" viewBox="0 0 16 16">
-                            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
-                          </svg><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-dash" viewBox="0 0 16 16">
-                            <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8"/>
-                          </svg>
+                          <th >{{v.cantida}} 
 
                           </th>
-                          <th><button type="button" class="btn btn-danger"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
-                            <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
-                          </svg></button>
+                          <th><button class="btn  btn-success w-25"><svg xmlns="http://www.w3.org/2000/svg" (click)="agregarCantidad(v.id)" width="16" height="16" fill="currentColor" class="bi bi-plus me-2 ms-2" viewBox="0 0 16 16">
+                            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
+                          </svg></button> <button class="btn  btn-danger w-25"><svg xmlns="http://www.w3.org/2000/svg" (click)="quitarCantidad(v.id)" width="16" height="16" fill="currentColor" class="bi bi-dash" viewBox="0 0 16 16">
+                            <path d="M4 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 4 8"/>
+                          </svg></button> 
                           </th>
                           
                         </tr>
@@ -71,7 +84,7 @@
                 </ul>
                 <div class="w-100 mx-auto text-center mt-3">
                 
-                  <button class="btn  btn-success w-25 " (click)="terminarVenta(creandoVentas.id)" >Terminar venta</button>
+                  <button class="btn  btn-success w-25 " (click)="terminarVenta(creandoVentas.id)" >Terminar venta: {{creandoVentas.total}}€</button>
 
                 </div>
               </div>
@@ -83,172 +96,250 @@
             
           </div>
         </div>
-        <hr>
+        <hr class="w-75 mx-auto">
         
     <div class="w-100">
 
       <h3 class="text-center">Todas las ventas</h3>
-      <div class="text-center mt-5 mb-3 d-flex mx-auto w-50" style="justify-content: space-around;">
+      <div class="d-flex flex-wrap justify-content-center gap-2 mb-4" style="justify-content: space-around;">
           
-        <button class="btn  btn-info" (click)="verTodasVentas()">Todas las ventas</button> 
-        <button class="btn  btn-info" (click)="ventasConFactura()">Con factura</button>
-        <button class="btn  btn-info" (click)="ventasEditables()">Editabe</button>
-        <button class="btn  btn-info" (click)="ventasTotaVentas()">Mayor total</button>
+        <button class="btn btn-info d-flex align-items-center gap-2 btn-premium pastel-filtrar" (click)="verTodasVentas()" style="background-color: #D6EAF8;
+        color: #21618C;
+        ">Todas las ventas <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-funnel" viewBox="0 0 16 16">
+          <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5zm1 .5v1.308l4.372 4.858A.5.5 0 0 1 7 8.5v5.306l2-.666V8.5a.5.5 0 0 1 .128-.334L13.5 3.308V2z"/>
+        </svg></button> 
+        <button class="btn btn-info d-flex align-items-center gap-2 btn-premium pastel-filtrar" (click)="ventasConFactura()">Con factura <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-funnel" viewBox="0 0 16 16">
+          <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5zm1 .5v1.308l4.372 4.858A.5.5 0 0 1 7 8.5v5.306l2-.666V8.5a.5.5 0 0 1 .128-.334L13.5 3.308V2z"/>
+        </svg></button>
+        <button class="btn btn-info d-flex align-items-center gap-2 btn-premium pastel-filtrar" (click)="ventasEditables()">Editabe <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-funnel" viewBox="0 0 16 16">
+          <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5zm1 .5v1.308l4.372 4.858A.5.5 0 0 1 7 8.5v5.306l2-.666V8.5a.5.5 0 0 1 .128-.334L13.5 3.308V2z"/>
+        </svg></button>
+        <button class="btn btn-info d-flex align-items-center gap-2 btn-premium pastel-filtrar" (click)="ventasTotaVentas()">Mayor total <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-funnel" viewBox="0 0 16 16">
+          <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5zm1 .5v1.308l4.372 4.858A.5.5 0 0 1 7 8.5v5.306l2-.666V8.5a.5.5 0 0 1 .128-.334L13.5 3.308V2z"/>
+        </svg></button>
 
       </div>
       <div class="card w-75 mx-auto">
-        <table class="table table-hover">
-          <thead>
-            <tr>
-              <th scope="col">Fecha</th>
-              <th scope="col">Factura</th>
-              <th scope="col">Editable</th>
-              <th scope="col">Total</th>
-              
-            </tr>
-          </thead>
-          <tbody>
-            
-            <tr *ngFor="let v of todasVentas" (click)="open2(contentE,v)" >
-              
-              <td>{{v.fecha}}</td>
-              <td *ngIf="!v.factura"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-x-lg" viewBox="0 0 16 16">
-                <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
-              </svg></td>
-              <td *ngIf="v.factura"><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="green" class="bi bi-check" viewBox="0 0 16 16">
-                <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
-              </svg></td>
-              <td *ngIf="v.terminado"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-x-lg" viewBox="0 0 16 16">
-                <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
-              </svg></td>
-              <td *ngIf="!v.terminado"><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="green" class="bi bi-check" viewBox="0 0 16 16">
-                <path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
-              </svg></td>
-              <td>{{v.total}}€</td>
-              
-            </tr>
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th scope="col">Fecha</th>
+                <th scope="col">Factura</th>
+                <th scope="col">Editable</th>
+                <th scope="col">Total</th>
+                <th scope="col">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let v of alltodasVentas" (click)="open2(contentE,v)">
+                <td>{{ v.fecha }}</td>
+      
+                <td *ngIf="!v.factura">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-x" viewBox="0 0 16 16">
+  <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+</svg>
+                </td>
+                <td *ngIf="v.factura">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" class="bi bi-check2" viewBox="0 0 16 16">
+                    <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/>
+                  </svg>
+                </td>
+      
+                <td *ngIf="v.terminado">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-x" viewBox="0 0 16 16">
+  <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+</svg>
+                </td>
+                <td *ngIf="!v.terminado">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="green" class="bi bi-check2" viewBox="0 0 16 16">
+                    <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0"/>
+                  </svg>
+                </td>
+      
+                <td>{{ v.total }}€</td>
+                <td class="overflow-hidden">
+                  <div ngbDropdown container="body">
+                    <button type="button" class="btn btn-outline-primary btn-sm" ngbDropdownToggle (click)="$event.stopPropagation()">Acciones</button>
+                    <div ngbDropdownMenu>
+                      <button ngbDropdownItem (click)="open3(contentD,v.id)">Ver contenido de la venta</button>
+                      <div class="dropdown-divider"></div>
+                      <button ngbDropdownItem>Delete</button>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="d-flex justify-content-between  mt-3">
+          <ngb-pagination
+            [(page)]="page"
+            [pageSize]="pageSize"
+            [collectionSize]="collectionSize"
+            (pageChange)="refreshCountriesV2()">
+          </ngb-pagination>
         
-          </tbody>
-        </table>
-
+          <select class="form-select w-auto ms-2" [(ngModel)]="pageSize" (ngModelChange)="refreshCountriesV2()">
+            <option [ngValue]="2">2 por página</option>
+            <option [ngValue]="4">4 por página</option>
+            <option [ngValue]="6">6 por página</option>
+          </select>
+        </div>
+        
       </div>
+      
 
     </div>
 
 
     </div>
     
-    <ng-template #content let-c="close" let-d="dismiss" class="w-100 text-center mx-auto">
-      <div class="modal-header">
-        <h4 class="modal-title" id="modal-basic-title">TUs Productos</h4>
-        <button type="button" class="btn-close" aria-label="Close" (click)="d('Cross click')"></button>
-      </div>
-      <div class="modal-body">
-        <table class="table  table-hover">
-          <thead>
-            <tr>
-              
-              <th scope="col">Nombre</th>
-              <th scope="col">Precio</th>
-              <th scope="col">Stock</th>
-              <th scope="col">PrecioProveedor</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (country of productos; track country.nombre) {
-              <tr (click)="crearVenta(country.id)">
-               
-                <td>
-                 
-                  {{ country.nombre }}
-                </td>
-                <td>{{ country.precio | number }}</td>
-                <td>
-                 
-                  {{ country.stock }}
-                </td>
-                <td>{{ country.precioProveedor | number }}</td>
-              </tr>
-            }
-          </tbody>
-        </table>
-        
-        <div class="d-flex justify-content-between p-2">
-          <ngb-pagination
-            [collectionSize]="collectionSize"
-            [(page)]="page"
-            [pageSize]="pageSize"
-            (pageChange)="refreshCountries()"
-          >
-          </ngb-pagination>
-        
-          <select class="form-select" style="width: auto" [(ngModel)]="pageSize" (ngModelChange)="refreshCountries()">
-            <option [ngValue]="2">2 items per page</option>
-            <option [ngValue]="4">4 items per page</option>
-            <option [ngValue]="6">6 items per page</option>
-          </select>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary" (click)="c('Save click')">Save</button>
-      </div>
-    </ng-template>
-
-
-    <ng-template #contentE let-c="close" let-d="dismiss" class="w-100">
-      <div class="modal-header">
-        <h4 class="modal-title" id="modal-basic-title">TUs Productos Editando</h4>
-        <button type="button" class="btn-close" aria-label="Close" (click)="d('Cross click')"></button>
-      </div>
-      <div class="modal-body">
-        <table class="table  table-hover">
-          <thead>
-            <tr>
-              
-              <th scope="col">Nombre</th>
-              <th scope="col">Precio</th>
-              <th scope="col">Stock</th>
-              <th scope="col">PrecioProveedor</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (country of productos; track country.nombre) {
-              <tr (click)="editarVenta(country.id)">
-               
-                <td>
-                 
-                  {{ country.nombre }}
-                </td>
-                <td>{{ country.precio | number }}</td>
-                <td>
-                 
-                  {{ country.stock }}
-                </td>
-                <td>{{ country.precioProveedor | number }}</td>
-              </tr>
-            }
-          </tbody>
-        </table>
-        
-        <div class="d-flex justify-content-between p-2">
-          <ngb-pagination
-            [collectionSize]="collectionSize"
-            [(page)]="page"
-            [pageSize]="pageSize"
-            (pageChange)="refreshCountries()"
-          >
-          </ngb-pagination>
-        
-          <select class="form-select" style="width: auto" [(ngModel)]="pageSize" (ngModelChange)="refreshCountries()">
-            <option [ngValue]="2">2 items per page</option>
-            <option [ngValue]="4">4 items per page</option>
-            <option [ngValue]="6">6 items per page</option>
-          </select>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary" (click)="c('Save click')">Save</button>
-      </div>
-    </ng-template>
+   
 
 </div>
+<ng-template #content let-c="close" let-d="dismiss">
+  <div class="modal-header bg-success text-white rounded-top">
+    <h5 class="modal-title fw-bold">🛒 Iniciar nueva venta</h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="d('Cross click')"></button>
+  </div>
+
+  <div class="modal-body">
+    <p class="text-muted mb-3">Haz clic en un producto para añadirlo a la venta.</p>
+    
+    <div class="table-responsive">
+      <table class="table table-hover table-bordered text-center align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Nombre</th>
+            <th>Precio</th>
+            <th>Stock</th>
+            <th>Proveedor</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (country of productos; track country.nombre) {
+            <tr class="clickable-row" (click)="crearVenta(country.id)">
+              <td>{{ country.nombre }}</td>
+              <td>{{ country.precio | number:'1.2-2' }}€</td>
+              <td>{{ country.stock }}</td>
+              <td>{{ country.precioProveedor | number:'1.2-2' }}€</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mt-3">
+      <ngb-pagination
+        [collectionSize]="collectionSize"
+        [(page)]="page"
+        [pageSize]="pageSize"
+        (pageChange)="refreshCountries()">
+      </ngb-pagination>
+
+      <select class="form-select w-auto ms-2" [(ngModel)]="pageSize" (ngModelChange)="refreshCountries()">
+        <option [ngValue]="2">2 por página</option>
+        <option [ngValue]="4">4 por página</option>
+        <option [ngValue]="6">6 por página</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" (click)="c('Save click')">Cerrar</button>
+  </div>
+</ng-template>
+
+
+
+
+<ng-template #contentD let-c="close" let-d="dismiss">
+  <div class="modal-header bg-primary text-white rounded-top">
+    <h5 class="modal-title fw-bold">📋 Detalles de la venta</h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="d('Cross click')"></button>
+  </div>
+
+  <div class="modal-body">
+    <div class="table-responsive">
+      <table class="table table-bordered text-center align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Producto</th>
+            <th>Precio</th>
+            <th>Cantidad</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let v of detallesVenta.detalleVentas">
+            <td>{{v.nombreProducto}}</td>
+            <td>{{v.precioProducto}}€</td>
+            <td>x{{v.cantida}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <hr>
+    <p class="text-end fw-bold fs-5">💰 Total: {{detallesVenta.total}}€</p>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" (click)="c('Save click')">Cerrar</button>
+  </div>
+</ng-template>
+
+
+
+<ng-template #contentE let-c="close" let-d="dismiss">
+  <div class="modal-header bg-warning text-dark rounded-top">
+    <h5 class="modal-title fw-bold">✏️ Añadir productos a la venta</h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="d('Cross click')"></button>
+  </div>
+
+  <div class="modal-body">
+    <p class="text-muted mb-3">Haz clic en un producto para agregarlo a la venta existente.</p>
+
+    <div class="table-responsive">
+      <table class="table table-hover table-bordered text-center align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Nombre</th>
+            <th>Precio</th>
+            <th>Stock</th>
+            <th>Proveedor</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (country of productos; track country.nombre) {
+            <tr class="clickable-row" (click)="editarVenta(country.id)">
+              <td>{{ country.nombre }}</td>
+              <td>{{ country.precio | number:'1.2-2' }}€</td>
+              <td>{{ country.stock }}</td>
+              <td>{{ country.precioProveedor | number:'1.2-2' }}€</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mt-3">
+      <ngb-pagination
+        [collectionSize]="collectionSize"
+        [(page)]="page"
+        [pageSize]="pageSize"
+        (pageChange)="refreshCountries()">
+      </ngb-pagination>
+
+      <select class="form-select w-auto ms-2" [(ngModel)]="pageSize" (ngModelChange)="refreshCountries()">
+        <option [ngValue]="2">2 por página</option>
+        <option [ngValue]="4">4 por página</option>
+        <option [ngValue]="6">6 por página</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-secondary" (click)="c('Save click')">Cerrar</button>
+  </div>
+</ng-template>

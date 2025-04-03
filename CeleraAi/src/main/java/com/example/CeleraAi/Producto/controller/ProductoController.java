@@ -6,6 +6,7 @@ import com.example.CeleraAi.Producto.service.ProductoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,10 +22,27 @@ public class ProductoController {
         return ResponseEntity.status(201).body(productoDto);
     }
 
+    @PostMapping("usuario/importar/productos/excel/{idNegocio}")
+    public ResponseEntity<List<ProductoDto>> importarProductos(@RequestParam("file") MultipartFile file,
+                                                               @PathVariable UUID idNegocio) {
+        try {
+            List<ProductoDto> productos = productoService.importarProductosDesdeExcel(file, idNegocio);
+            return ResponseEntity.ok(productos);
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
     @GetMapping("usuario/ver/productos/{id}")
     public ResponseEntity<List<ProductoDto>> verLosProductos(@PathVariable UUID id){
         List<ProductoDto> productoDtos = productoService.verTodosLosProductos(id);
         return ResponseEntity.ok(productoDtos);
+    }
+
+    @PostMapping("usuario/poner/no/disponible/{id}")
+    public ResponseEntity<ProductoDto> ponerComoNoDisponible(@PathVariable UUID id){
+        ProductoDto productoDto = productoService.ponerNoDisponible(id);
+        return ResponseEntity.status(201).body(productoDto);
     }
 
     @GetMapping("usuario/productos/bajo/stock/{id}")
@@ -36,6 +54,12 @@ public class ProductoController {
     @GetMapping("usuario/producto/mas/vendido/semana/{id}")
     public ResponseEntity<List<ProductoDto>> masVendidoSemana(@PathVariable UUID id){
         List<ProductoDto> productoDtos = productoService.masVendidos(id);
+        return ResponseEntity.ok(productoDtos);
+    }
+
+    @GetMapping("usuario/producto/mas/vendido/mes/{id}")
+    public ResponseEntity<List<ProductoDto>> masVendidoMes(@PathVariable UUID id){
+        List<ProductoDto> productoDtos = productoService.masVendidosMes(id);
         return ResponseEntity.ok(productoDtos);
     }
 
@@ -61,6 +85,12 @@ public class ProductoController {
     public ResponseEntity<List<ProductoDto>> menorStock(@PathVariable UUID id){
         List<ProductoDto> productoDtos = productoService.ordenarPorMenorStock(id);
         return ResponseEntity.ok(productoDtos);
+    }
+
+    @PostMapping("usuario/editar/producto/{id}")
+    public ResponseEntity<ProductoDto> editarProducto(@PathVariable UUID id, @RequestBody CrearProductoDto crearProductoDto){
+        ProductoDto productoDto = productoService.editarProdeucto(id, crearProductoDto);
+        return ResponseEntity.status(201).body(productoDto);
     }
 
 

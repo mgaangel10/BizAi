@@ -1,12 +1,29 @@
 <div class="w-100 d-flex">
-    <div class="w-25   align-content-center text-center" style="height: 100vh; background-color: rgb(113, 209, 145); border-top-right-radius: 20px; border-bottom-right-radius: 15px;">
-        <mat-card appearance="outlined" class="mb-5 w-50 mx-auto">
-            <div class="h-50  ">
-                <mat-card-content class="w-100"><strong>{{negocios.nombre!}}</strong></mat-card-content>
-            </div>
-            
-          </mat-card>
-          <div class="h-50">
+    <div class="w-25   align-content-center text-center" style=" background: linear-gradient(135deg, #f0f4ff, #e4f7ff); border-top-right-radius: 20px; border-bottom-right-radius: 15px; ">
+        <mat-card 
+        class="business-card-gold mb-5 mx-auto"
+        style="max-width: 500px; cursor: pointer;"
+        [routerLink]="['/home']">
+      
+        <div class="p-4 d-flex align-items-center justify-content-between">
+          <!-- Info del negocio -->
+          <div class="d-flex flex-column">
+            <span class="text-uppercase small mb-1 text-dark" style="letter-spacing: 1px;">Tu negocio</span>
+            <h4 class="mb-0 fw-bold" style="color: #7D6608;">{{ negocios.nombre }}</h4>
+          </div>
+      
+          <!-- Ícono navegación -->
+          <div class="d-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm"
+               style="width: 45px; height: 45px;">
+               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
+              </svg>
+          </div>
+        </div>
+      </mat-card>
+      
+      
+          <div class="h-75">
               
               <app-header></app-header>
           </div>
@@ -17,135 +34,110 @@
 
      
 
-        <div class="d-flex justify-content-center align-items-center w-100">
+<!-- ENVOLTORIO GENERAL CON ALTURA LIMITADA -->
+<div class="w-100" style="height: 100%; overflow: hidden;">
+  
+  
+    <!-- COLUMNA PRINCIPAL - TODO EL ANCHO -->
     
-            
-    
-            <div class="w-50">
-    
-                <div class="card w-100  text-center mx-auto" style="background-color: rgb(247, 245, 163); ">
-                    <div class="card-body">
-                      <h5 class="card-title">Ventas Semanales</h5>
-                      
-                      <p class="card-text" *ngIf="ventas">
-                        Semana: {{ ventas.semana }}
-                      </p>
-                      <hr>
-                      
-                      <div class="d-flex flex-column" style="max-height: 350px; ">
-                        <ul class="list-group " >
-                          <li class="list-group-item d-flex justify-content-between" *ngFor="let dia of obtenerDiasSemana()">
-                            <span>{{ dia }}</span>
-                            <span class="fw-bold">{{ ventas.ventas[dia]| currency:'EUR' }}</span>
-                          </li>
-                        </ul>
+      <div class="d-flex w-100">
+        <mat-card class="shadow-sm rounded-4 flex-fill w-50">
+          <mat-card-title class="text-center fs-6 fw-bold text-primary">
+            📊 Ventas Semanales (Semana {{ ventas?.semana }})
+          </mat-card-title>
+          <mat-card-content class="overflow-auto" style="max-height: 60vh;">
+            <div class="row g-2">
+              <div class="col-6" *ngFor="let dia of obtenerDiasSemana()">
+                <div class="card border-0 shadow-sm p-2 rounded-3 h-100">
+                  <span class="text-muted small">{{ dia }}</span>
+                  <h6 class="fw-bold text-success mt-1">{{ ventas.ventas[dia] | currency:'EUR' }}</h6>
+                </div>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <div class="d-flex w-50">
+          <mat-card class="shadow-sm rounded-4 flex-fill w-100">
+            <mat-card-title class="text-center fs-6 fw-bold text-primary">🏆 Productos más vendidos</mat-card-title>
+            <mat-card-content class="mt-3">
+              <div class="row row-cols-2 g-3" style="max-height: 40vh; overflow-y: auto;">
+                <div class="col" *ngFor="let p of productos">
+                  <div class="card border-0 shadow-sm rounded-3 h-100">
+                    <div class="card-body d-flex flex-column justify-content-between">
+                      <div class="d-flex align-items-center justify-content-between mb-2">
+                        <h6 class="fw-bold mb-0">{{ p.nombre }}</h6>
+                        <span class="badge bg-success rounded-pill">{{ p.precio }}€</span>
+                      </div>
+                      <div class="text-muted small">Stock: {{ p.stock }}</div>
+                      <div class="progress mt-2" style="height: 6px;">
+                        <div class="progress-bar bg-success"
+                             role="progressbar"
+                             [style.width.%]="getStockPercentage(p.stock)"
+                             [attr.aria-valuenow]="p.stock"
+                             attr.aria-valuemin="0"
+                             attr.aria-valuemax="100">
+                        </div>
                       </div>
                     </div>
                   </div>
-                  
-                  
-                  
-    
-    
-    
-              <div class="card w-100 p-3 text-center mt-3 mx-auto" style=" background-color: rgb(175, 240, 226);">
-                <div class="card-body">
-                  Productos mas vendido en esta semana
-                  <hr>
-
-                  <table class="table table-hover">
-                    <thead>
-                      <tr>
-                        
-                        <th scope="col">Nombre</th>
-                        <th scope="col">Precio</th>
-                        <th scope="col">Stock</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr *ngFor="let p of productos">
-                        
-                        <td>{{p.nombre}}</td>
-                        <td>{{p.precio}}€</td>
-                        <td>{{p.stock}}</td>
-                      </tr>
-                     
-                    </tbody>
-                  </table>
-
                 </div>
               </div>
-               
-            </div>
-         
-    
-            <div class="mx-auto w-75">
-              <div class="card w-100 text-center" style="height: 520px; background-color: rgb(75, 170, 91);">
-                <div class="card-body mx-auto">
-                  
-                  <!-- Botones y input en la misma fila -->
-                  <div class="d-flex justify-content-center align-items-center text-center gap-2">
-                    <button type="button" class="btn btn-primary" (click)="cambiarGrafico('semanal')">Estadísticas semanal</button>
-                    <button type="button" class="btn btn-primary" (click)="cambiarGrafico('mensual')">Estadísticas mensual</button>
-                    
-                    <!-- Input para definir el tope del eje Y -->
-                    <label for="">Previsión de ventas €</label>
-                    <input 
-                      type="number" 
-                      id="yMaxInput" 
-                      class="form-control w-25"
-                      [value]="yMax" 
-                      (input)="actualizarYMaximo($event)"
-                      style="max-width: 100px;">
-                  </div>
-                  
-                  <!-- Mostrar la gráfica según el estado de mostrarVentasSemanales -->
-                  <div *ngIf="mostrarVentasSemanales">
-                    <ngx-charts-bar-vertical
-                      [view]="view"
-                      [results]="ventasData"
-                      [xAxis]="showXAxis"
-                      [yAxis]="showYAxis"
-                      [gradient]="gradient"
-                      
-                      [showXAxisLabel]="showXAxisLabel"
-                      [xAxisLabel]="xAxisLabel"
-                      [showYAxisLabel]="showYAxisLabel"
-                      [yAxisLabel]="yAxisLabel"
-                      [yScaleMax]="yMax"
-                      >
-                    </ngx-charts-bar-vertical>
-                  </div>
-                  
-                  <div *ngIf="!mostrarVentasSemanales">
-                    <ngx-charts-bar-vertical
-                      [view]="view"
-                      [results]="ventasData"
-                      [xAxis]="showXAxis"
-                      [yAxis]="showYAxis"
-                      [gradient]="gradient"
-                      
-                      [showXAxisLabel]="showXAxisLabel"
-                      [xAxisLabel]="'Mensual'"
-                      [showYAxisLabel]="showYAxisLabel"
-                      [yAxisLabel]="yAxisLabel"
-                      [yScaleMax]="yMax"
-                      >
-                    </ngx-charts-bar-vertical>
-                  </div>
-                  
-                </div>
-              </div>
-              
-              
-            </div>
-    
-    
-    
+            </mat-card-content>
+          </mat-card>
         </div>
+      </div>
+
+      <!-- 📈 Estadísticas de Ventas -->
+    <!-- 📈 Estadísticas de Ventas -->
+    
+        
+      <!-- 📈 Gráfico - 50% -->
+      <div class="w-75 mx-auto">
+        <mat-card class="shadow-lg rounded-4 w-100">
+          <mat-card-title class="fs-5 fw-bold text-primary mb-3">📈 Estadísticas de Ventas</mat-card-title>
+          <mat-card-content class="d-flex flex-column mx-auto" style="overflow: hidden;">
+      
+            <!-- Filtros -->
+            <div class="d-flex align-items-center gap-3 mb-4 flex-wrap">
+              <button class="btn btn-outline-info" (click)="cambiarGrafico('semanal')">📆 Ventas Semanales</button>
+              <button class="btn btn-outline-info" (click)="cambiarGrafico('mensual')">📅 Ventas Mensuales</button>
+              <mat-form-field appearance="outline" class="mb-0 flex-grow-1">
+                <mat-label>Previsión máxima (€)</mat-label>
+                <input matInput type="number" [value]="yMax" (input)="actualizarYMaximo($event)">
+              </mat-form-field>
+            </div>
+      
+            <!-- Gráfico -->
+            <div class="d-flex align-items-center justify-content-center" style="width: 100%; overflow-x: auto;">
+              <ngx-charts-bar-vertical *ngIf="mostrarVentasSemanales"
+                [view]="[700,300]" [results]="ventasData" [xAxis]="showXAxis"
+                [yAxis]="showYAxis" [gradient]="gradient"
+                [showXAxisLabel]="showXAxisLabel" [xAxisLabel]="xAxisLabel"
+                [showYAxisLabel]="showYAxisLabel" [yAxisLabel]="yAxisLabel"
+                [yScaleMax]="yMax">
+              </ngx-charts-bar-vertical>
+      
+              <ngx-charts-bar-vertical *ngIf="!mostrarVentasSemanales"
+                [view]="[700,300]" [results]="ventasData" [xAxis]="showXAxis"
+                [yAxis]="showYAxis" [gradient]="gradient"
+                [showXAxisLabel]="showXAxisLabel" [xAxisLabel]="'Mensual'"
+                [showYAxisLabel]="showYAxisLabel" [yAxisLabel]="yAxisLabel"
+                [yScaleMax]="yMax">
+              </ngx-charts-bar-vertical>
+            </div>
+      
+          </mat-card-content>
+        </mat-card>
+      </div>
+      
+
 
    
-    
-      
-    
+  
+
+
+
+  
+
 </div>

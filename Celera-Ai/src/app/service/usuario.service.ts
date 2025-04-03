@@ -12,6 +12,7 @@ import { VentasResponse } from '../model/ventas-dto';
 import { FacturaResponse } from '../model/factura-response';
 import { VerFacturas } from '../model/ver-facturas';
 import { ChatGPTResponse } from '../model/gpt-response';
+import { RegisterResponse } from '../model/register-response';
 
 
 @Injectable({
@@ -29,6 +30,27 @@ export class UsuarioService {
         "email": `${email}`,
         "password": `${password}`
       });
+  }
+
+  register(email: string, name: string,lastName: string,password: string,phoneNumber: string): Observable<RegisterResponse> {
+    return this.http.post<RegisterResponse>(`${this.url}/auth/register/user`,
+      {
+        "email": `${email}`,
+        "name": `${name}`,
+        "lastName": `${lastName}`,
+        "password": `${password}`,
+        "phoneNumber": `${phoneNumber}`,
+      });
+  }
+  
+  informacionUsuario():Observable<LoginResponse>{
+    let token = localStorage.getItem('TOKEN');
+    return this.http.get<LoginResponse>(`${this.url}/usuario/informacion/usuario`, {
+      headers: {
+        accept: 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    });
   }
 
 
@@ -75,6 +97,16 @@ export class UsuarioService {
   productosMasVendidoSemana(id:string):Observable<ProductosMasVendidos[]>{
     let token = localStorage.getItem('TOKEN');
     return this.http.get<ProductosMasVendidos[]>(`${this.url}/usuario/producto/mas/vendido/semana/${id}`, {
+      headers: {
+        accept: 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    });
+  }
+
+  productosMasVendidoMes(id:string):Observable<ProductosMasVendidos[]>{
+    let token = localStorage.getItem('TOKEN');
+    return this.http.get<ProductosMasVendidos[]>(`${this.url}/usuario/producto/mas/vendido/mes/${id}`, {
       headers: {
         accept: 'application/json',
         'Authorization': `Bearer ${token}`
@@ -332,6 +364,113 @@ ventasConTotalVentas(id:string):Observable<VentaDto[]>{
     }
   });
 }
+
+importarProductos(file:File,idNegocio:string):Observable<any>{
+  let token = localStorage.getItem('TOKEN');
+
+  const formData = new FormData();
+  formData.append('file', file);
+  
+  return this.http.post<any>(`${this.url}/usuario/importar/productos/excel/${idNegocio}`, formData,{
+    headers: {
+      accept: 'application/json',
+      'Authorization': `Bearer ${token}`
+    }
+  });
+
+}
+
+agregarCantidad(id:string):Observable<VentaDto>{
+  let token = localStorage.getItem('TOKEN');
+  return this.http.post<VentaDto>(`${this.url}/usuario/agregar/cantidad/${id}`, {},{
+    headers: {
+      accept: 'application/json',
+      'Authorization': `Bearer ${token}`
+    }
+  });
+}
+
+quitarCantidad(id:string):Observable<VentaDto>{
+  let token = localStorage.getItem('TOKEN');
+  return this.http.post<VentaDto>(`${this.url}/usuario/quitar/cantidad/${id}`, {},{
+    headers: {
+      accept: 'application/json',
+      'Authorization': `Bearer ${token}`
+    }
+  });
+}
+
+verIngresos(id:string):Observable<number>{
+  let token = localStorage.getItem('TOKEN');
+  return this.http.get<number>(`${this.url}/usuario/ver/ingresos/total/${id}`, {
+    headers: {
+      accept: 'application/json',
+      'Authorization': `Bearer ${token}`
+    }
+  });
+}
+
+verGastos(id:string):Observable<number>{
+  let token = localStorage.getItem('TOKEN');
+  return this.http.get<number>(`${this.url}/usuario/ver/gastos/total/${id}`, {
+    headers: {
+      accept: 'application/json',
+      'Authorization': `Bearer ${token}`
+    }
+  });
+}
+
+verBeneficio(id:string):Observable<number>{
+  let token = localStorage.getItem('TOKEN');
+  return this.http.get<number>(`${this.url}/usuario/ver/beneficio/total/${id}`, {
+    headers: {
+      accept: 'application/json',
+      'Authorization': `Bearer ${token}`
+    }
+  });
+}
+
+verDetallesVenta(id:string):Observable<VentaDto>{
+  let token = localStorage.getItem('TOKEN');
+  return this.http.get<VentaDto>(`${this.url}/usuario/ver/detalles/venta/${id}`, {
+    headers: {
+      accept: 'application/json',
+      'Authorization': `Bearer ${token}`
+    }
+  });
+}
+
+
+editarProducto(id:string,nombre:string,precio:number,stock:number,precioProveedor:number):Observable<TodosLosProductos>{
+  let token = localStorage.getItem('TOKEN');
+  return this.http.post<TodosLosProductos>(`${this.url}/usuario/editar/producto/${id}`,{
+    "nombre": `${nombre}`,
+      "precio": `${precio}`,
+      "stock": `${stock}`,
+      "precioProveedor": `${precioProveedor}`,
+   
+
+  }, {
+    headers: {
+      accept: 'application/json',
+      'Authorization': `Bearer ${token}`
+    }
+  });
+}
+
+ponerNoDisponible(id:string):Observable<TodosLosProductos>{
+  let token = localStorage.getItem('TOKEN');
+  return this.http.post<TodosLosProductos>(`${this.url}/usuario/poner/no/disponible/${id}`,{}, {
+    headers: {
+      accept: 'application/json',
+      'Authorization': `Bearer ${token}`
+    }
+  });
+}
+
+
+
+
 
 
 

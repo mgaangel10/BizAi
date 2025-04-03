@@ -20,6 +20,11 @@ import { DashBoardComponent } from './pages/dash-board/dash-board.component';
 import { CrearNegocioComponent } from './pages/crear-negocio/crear-negocio.component';
 import { InventarioComponent } from './pages/inventario/inventario.component';
 import { VentasComponent } from './pages/ventas/ventas.component';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatFormField } from '@angular/material/form-field';
+import { NgxPaginationModule } from 'ngx-pagination';
+
+import { MatLabel } from '@angular/material/form-field';
 import { EstadisticasComponent } from './pages/estadisticas/estadisticas.component';
 import { FacturaComponent } from './pages/factura/factura.component';
 import { AsistenteComponent } from './pages/asistente/asistente.component';
@@ -41,9 +46,13 @@ import { AsistenteComponent } from './pages/asistente/asistente.component';
   ],
   imports: [
     BrowserModule,
+    MatDividerModule,
     FormsModule,
     AppRoutingModule,
+    NgxPaginationModule,
+    MatLabel,
     ReactiveFormsModule,
+    MatFormField,
     MatCardModule,
     MarkdownModule,
     MatChipsModule,

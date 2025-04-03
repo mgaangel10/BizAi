@@ -1,0 +1,70 @@
+.clickable-row {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  .clickable-row:hover {
+    background-color: #f1f1f1;
+  }
+  .business-card-gold {
+    border-radius: 16px;
+    background: linear-gradient(135deg, #fffbe6, #fdf2cc);
+    border: 1px solid #f8e4a0;
+    box-shadow: 0 8px 20px rgba(212, 176, 72, 0.15);
+    transition: all 0.25s ease-in-out;
+  }
+  
+  .business-card-gold:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(212, 176, 72, 0.25);
+  }
+
+
+  .btn-premium {
+    padding: 0.6rem 1.5rem;
+    font-weight: 600;
+    font-size: 1rem;
+    border: none;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+  
+  .btn-premium:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+  
+  /* COLORES PASTEL PREMIUM */
+  .pastel-crear {
+    background-color: #E2F7E1;
+    color: #1E8449;
+  }
+  .pastel-crear:hover {
+    background-color: #D4EFDF;
+  }
+  
+  .pastel-filtrar {
+    background-color: #DDEEFF;
+    color: #2E86C1;
+  }
+  .pastel-filtrar:hover {
+    background-color: #D0E6FF;
+  }
+  
+  .pastel-accion {
+    background-color: #FFF4D6;
+    color: #B9770E;
+  }
+  .pastel-accion:hover {
+    background-color: #FDEBB4;
+  }
+  
+  .pastel-eliminar {
+    background-color: #FCE3E1;
+    color: #C0392B;
+  }
+  .pastel-eliminar:hover {
+    background-color: #F9D0CE;
+  }

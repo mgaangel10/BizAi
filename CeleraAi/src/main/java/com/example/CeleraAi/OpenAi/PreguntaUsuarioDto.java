@@ -1,4 +1,8 @@
 package com.example.CeleraAi.OpenAi;
 
-public record PreguntaUsuarioDto(String pregunta) {
+import com.example.CeleraAi.OpenAi.models.AccionIA;
+
+public record PreguntaUsuarioDto(String pregunta,
+                                 boolean confirmarAccion,
+                                 AccionIA accion) {
 }

@@ -1,13 +1,29 @@
 <div class="w-100 d-flex">
     <div class="w-25 align-content-center text-center" 
-         style="height: 100vh; background-color: rgb(113, 209, 145); 
+         style="height: 100vh; background: linear-gradient(135deg, #f0f4ff, #e4f7ff); 
                 border-top-right-radius: 20px; border-bottom-right-radius: 15px;">
-        <mat-card appearance="outlined" class="mb-5 w-50 mx-auto">
-            <div class="h-50">
-                <mat-card-content class="w-100"><strong>{{nombre}}</strong></mat-card-content>
-            </div>
-        </mat-card>
-        <div class="h-50">
+             <mat-card 
+             class="business-card-gold mb-5 mx-auto"
+             style="max-width: 500px; cursor: pointer;"
+             [routerLink]="['/home']">
+           
+             <div class="p-4 d-flex align-items-center justify-content-between">
+               <!-- Info del negocio -->
+               <div class="d-flex flex-column">
+                 <span class="text-uppercase small mb-1 text-dark" style="letter-spacing: 1px;">Tu negocio</span>
+                 <h4 class="mb-0 fw-bold" style="color: #7D6608;">{{ nombre }}</h4>
+               </div>
+           
+               <!-- Ícono navegación -->
+               <div class="d-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm"
+                    style="width: 45px; height: 45px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
+                     <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
+                   </svg>
+               </div>
+             </div>
+           </mat-card>
+        <div class="h-75">
             <app-header></app-header>
         </div>
     </div>
@@ -41,7 +57,7 @@
 
                         </div>
                         <div class="p-3 rounded-3" style="background: rgba(255, 255, 255, 0.1);">
-                             {{ respuesta }}
+                             {{ respuesta.mensaje }}
                         </div>
                     </div>
                 </div>

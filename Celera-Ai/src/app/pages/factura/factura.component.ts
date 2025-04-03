@@ -4,6 +4,7 @@ import { VentaDto } from '../../model/detalles-negocios';
 import { NgbModal, NgbModalConfig } from '@ng-bootstrap/ng-bootstrap';
 import { FormControl, FormGroup } from '@angular/forms';
 import { FacturaResponse } from '../../model/factura-response';
+
 import { VerFacturas } from '../../model/ver-facturas';
 
 @Component({
@@ -15,6 +16,9 @@ import { VerFacturas } from '../../model/ver-facturas';
 export class FacturaComponent implements OnInit{
 
   ventas: VentaDto [] = [];
+  totalSinFacturar: number = 0;
+totalFacturado: number = 0;
+
   nombre!: string;
   idVenta!:string;
   idFactura!:string;
@@ -38,6 +42,8 @@ export class FacturaComponent implements OnInit{
     let id = localStorage.getItem('IDNEGOCIO');
     this.service.ventasSinFacturas(id!).subscribe(r=>{
       this.ventas = r;
+      this.totalSinFacturar = this.ventas.reduce((acc, venta) => acc + venta.total, 0);
+
     })
   }
 
@@ -45,6 +51,8 @@ export class FacturaComponent implements OnInit{
     let id = localStorage.getItem('IDNEGOCIO');
     this.service.VerFacturas(id!).subscribe(r=>{
       this.facturas = r;
+      this.totalFacturado = this.facturas.reduce((acc, f) => acc + f.total, 0);
+
     })
   }
   verDetallesFacturas(id:string){

@@ -117,6 +117,49 @@ public class VentaController {
         return ResponseEntity.ok(ventaDtos);
     }
 
+    @DeleteMapping("usuario/eliminar/detalle/{id}")
+    public void eliminarDetallesVenta(@PathVariable UUID id){
+        ventaService.eliminarDetalleVenta(id);
+
+    }
+
+    @PostMapping("usuario/quitar/cantidad/{id}")
+    public ResponseEntity<VentaDto> quitarCantidad(@PathVariable UUID id){
+        VentaDto ventaDto = ventaService.quitarUnaCntidad(id);
+        return ResponseEntity.status(201).body(ventaDto);
+    }
+
+    @PostMapping("usuario/agregar/cantidad/{id}")
+    public ResponseEntity<VentaDto> agregarCantidad(@PathVariable UUID id){
+        VentaDto ventaDto = ventaService.agregarCantidad(id);
+        return ResponseEntity.status(201).body(ventaDto);
+    }
+
+    @GetMapping("usuario/ver/ingresos/total/{id}")
+    public ResponseEntity<Double> ingresos(@PathVariable UUID id){
+        double ventaDtos = ventaService.ingresos(id);
+        return ResponseEntity.ok(ventaDtos);
+    }
+
+    @GetMapping("usuario/ver/gastos/total/{id}")
+    public ResponseEntity<Double> gastos(@PathVariable UUID id){
+        double ventaDtos = ventaService.gastos(id);
+        return ResponseEntity.ok(ventaDtos);
+    }
+
+    @GetMapping("usuario/ver/beneficio/total/{id}")
+    public ResponseEntity<Double> beneficio(@PathVariable UUID id){
+        double ventaDtos = ventaService.beneficio(id);
+        return ResponseEntity.ok(ventaDtos);
+    }
+
+    @GetMapping("usuario/ver/detalles/venta/{id}")
+    public ResponseEntity<VentaDto> verDetallesVenta(@PathVariable UUID id){
+        VentaDto ventaDtos = ventaService.detallesVenta(id);
+        return ResponseEntity.ok(ventaDtos);
+    }
+
+
 
 
 

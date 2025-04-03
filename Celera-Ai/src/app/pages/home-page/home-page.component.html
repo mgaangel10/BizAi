@@ -1,28 +1,46 @@
 <div class="w-100">
-    <h3 class="text-center">Tus negocios</h3>
-    <div class="d-flex w-100 flex-wrap justify-content-center align-items-center gap-2">
-        <mat-card *ngFor="let n of negocios" class="example-card " appearance="outlined" (click)="detallesNegocios(n.id)" >
-          <mat-card-header>
-            <mat-card-title>
-              <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-shop-window " viewBox="0 0 16 16">
-                <path d="M2.97 1.35A1 1 0 0 1 3.73 1h8.54a1 1 0 0 1 .76.35l2.609 3.044A1.5 1.5 0 0 1 16 5.37v.255a2.375 2.375 0 0 1-4.25 1.458A2.37 2.37 0 0 1 9.875 8 2.37 2.37 0 0 1 8 7.083 2.37 2.37 0 0 1 6.125 8a2.37 2.37 0 0 1-1.875-.917A2.375 2.375 0 0 1 0 5.625V5.37a1.5 1.5 0 0 1 .361-.976zm1.78 4.275a1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0 1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0 1.375 1.375 0 1 0 2.75 0V5.37a.5.5 0 0 0-.12-.325L12.27 2H3.73L1.12 5.045A.5.5 0 0 0 1 5.37v.255a1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0M1.5 8.5A.5.5 0 0 1 2 9v6h12V9a.5.5 0 0 1 1 0v6h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1V9a.5.5 0 0 1 .5-.5m2 .5a.5.5 0 0 1 .5.5V13h8V9.5a.5.5 0 0 1 1 0V13a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5a.5.5 0 0 1 .5-.5"/>
-              </svg>
-            </mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <p class="text-center">{{n.nombre}}</p>
-          </mat-card-content>
-          <mat-card-footer class="example-card-footer">
-            <mat-chip-set aria-label="Chihuahua traits">
-              <mat-chip>{{n.categoria}}</mat-chip>
-            </mat-chip-set>
-          </mat-card-footer>
-        </mat-card>
-      </div>
+  <!-- Navbar/Header con foto y datos del usuario -->
+  <div class="d-flex justify-content-between align-items-center bg-dark text-white p-3">
+    <div class="d-flex align-items-center">
       
-
-    <div class="mx-auto w-100 text-center mt-3">
-        <button type="button" class="btn btn-success text-center" [routerLink]="['/crear-negocio']">Crear negocio</button>
+      <div class="ml-3">
+        <h5>{{loginResponse?.fullname}}</h5>
+        <p class="mb-0">{{loginResponse?.username}}</p>
+        <p class="mb-0" style="font-size: 0.9rem;">{{loginResponse?.email}}</p>
+      </div>
     </div>
+    <button type="button" class="btn btn-outline-light" (click)="cerrarSesion()">Cerrar sesión</button>
+  </div>
 
+  <h3 class="text-center mt-4" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 600; color: #333;">Tus Negocios</h3>
+
+  <div class="d-flex w-100 flex-wrap justify-content-center align-items-center gap-4 mt-4">
+    <mat-card *ngFor="let n of negocios" class="example-card shadow-lg" appearance="outlined" (click)="detallesNegocios(n.id)" 
+              style="max-width: 300px; width: 100%; border-radius: 12px; transition: transform 0.3s ease, box-shadow 0.3s ease;">
+      
+      <mat-card-header class="p-3">
+        <mat-card-title class="d-flex justify-content-center">
+          <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-shop-window" viewBox="0 0 16 16">
+            <path d="M2.97 1.35A1 1 0 0 1 3.73 1h8.54a1 1 0 0 1 .76.35l2.609 3.044A1.5 1.5 0 0 1 16 5.37v.255a2.375 2.375 0 0 1-4.25 1.458A2.37 2.37 0 0 1 9.875 8 2.37 2.37 0 0 1 8 7.083 2.37 2.37 0 0 1 6.125 8a2.37 2.37 0 0 1-1.875-.917A2.375 2.375 0 0 1 0 5.625V5.37a1.5 1.5 0 0 1 .361-.976zm1.78 4.275a1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0 1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0M1.5 8.5A.5.5 0 0 1 2 9v6h12V9a.5.5 0 0 1 1 0v6h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1V9a.5.5 0 0 1 .5-.5m2 .5a.5.5 0 0 1 .5.5V13h8V9.5a.5.5 0 0 1 1 0V13a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5a.5.5 0 0 1 .5-.5"/>
+          </svg>
+        </mat-card-title>
+      </mat-card-header>
+      
+      <mat-card-content class="text-center p-3">
+        <p style="font-size: 1.1rem; color: #555;">{{n.nombre}}</p>
+      </mat-card-content>
+      
+      <mat-card-footer class="example-card-footer p-3">
+        <mat-chip-set aria-label="Categorías de negocios">
+          <mat-chip style="background-color: #f1f1f1; color: #333; border-radius: 20px;">{{n.categoria}}</mat-chip>
+        </mat-chip-set>
+      </mat-card-footer>
+    </mat-card>
+  </div>
+
+  <div class="mx-auto w-100 text-center mt-4">
+    <button type="button" class="btn btn-success btn-lg" style="border-radius: 25px; font-size: 1.2rem; padding: 12px 30px;" [routerLink]="['/crear-negocio']">
+      Crear Negocio
+    </button>
+  </div>
 </div>

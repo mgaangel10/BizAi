@@ -1,0 +1,22 @@
+.custom-btn-menu {
+  display: block;
+  white-space: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.custom-btn-menu:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+}
+
+@media (max-width: 576px) {
+  .custom-btn-menu i {
+    font-size: 1.2rem !important;
+  }
+
+  .custom-btn-menu span {
+    font-size: 0.95rem;
+  }
+}

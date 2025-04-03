@@ -1,1 +1,166 @@
-<p>estadisticas works!</p>
+
+<div class="d-flex w-100">
+    <div class="w-25   align-content-center text-center" style="height: 100vh; background: linear-gradient(135deg, #f0f4ff, #e4f7ff); border-top-right-radius: 20px; border-bottom-right-radius: 15px;">
+      <mat-card 
+      class="business-card-gold mb-5 mx-auto"
+      style="max-width: 500px; cursor: pointer;"
+      [routerLink]="['/home']" >
+    
+      <div class="p-4 d-flex align-items-center justify-content-between">
+        <!-- Info del negocio -->
+        <div class="d-flex flex-column">
+          <span class="text-uppercase small mb-1 text-dark" style="letter-spacing: 1px;">Tu negocio</span>
+          <h4 class="mb-0 fw-bold" style="color: #7D6608;">{{nombre }}</h4>
+        </div>
+    
+        <!-- Ícono navegación -->
+        <div class="d-flex align-items-center justify-content-center bg-white rounded-circle shadow-sm"
+             style="width: 45px; height: 45px;">
+             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-right" viewBox="0 0 16 16">
+              <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
+            </svg>
+        </div>
+      </div>
+    </mat-card>
+          <div class="h-75">
+              
+              <app-header></app-header>
+          </div>
+    
+    </div>
+
+    <div class="w-100 py-4">
+      <!-- Estadísticas de ingresos/gastos/beneficio -->
+      <div class="row g-4 justify-content-center">
+        
+        <!-- Ingresos -->
+        <div class="col-md-4 col-lg-3">
+          <div class="card shadow-sm border-0 rounded-4 bg-light">
+            <div class="card-body d-flex justify-content-between align-items-center">
+              <div>
+                <span class="text-muted">Ingresos</span>
+                <h5 class="fw-bold mb-0 mt-1">{{ingresos}}€</h5>
+              </div>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="green" class="bi bi-graph-up-arrow" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M0 0h1v15h15v1H0zm10 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V4.9l-3.613 4.417a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61L13.445 4H10.5a.5.5 0 0 1-.5-.5"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+    
+        <!-- Gastos -->
+        <div class="col-md-4 col-lg-3">
+          <div class="card shadow-sm border-0 rounded-4" style="background-color: #FFF0F0;">
+            <div class="card-body d-flex justify-content-between align-items-center">
+              <div>
+                <span class="text-muted">Gastos</span>
+                <h5 class="fw-bold mb-0 mt-1">{{gastos}}€</h5>
+              </div>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="red" class="bi bi-graph-down-arrow" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M0 0h1v15h15v1H0zm10 11.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 0-1 0v2.6l-3.613-4.417a.5.5 0 0 0-.74-.037L7.06 8.233 3.404 3.206a.5.5 0 0 0-.808.588l4 5.5a.5.5 0 0 0 .758.06l2.609-2.61L13.445 11H10.5a.5.5 0 0 0-.5.5"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+    
+        <!-- Beneficios -->
+        <div class="col-md-4 col-lg-3">
+          <div class="card shadow-sm border-0 rounded-4" style="background-color: #E8F5E9;">
+            <div class="card-body d-flex justify-content-between align-items-center">
+              <div>
+                <span class="text-muted">Beneficios</span>
+                <h5 class="fw-bold mb-0 mt-1">{{beneficio}}€</h5>
+              </div>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="green" class="bi bi-wallet2" viewBox="0 0 16 16">
+                <path d="M12.136.326A1.5 1.5 0 0 1 14 1.78V3h.5A1.5 1.5 0 0 1 16 4.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 13.5v-9a1.5 1.5 0 0 1 1.432-1.499zM5.562 3H13V1.78a.5.5 0 0 0-.621-.484zM1.5 4a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5z"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    
+      <!-- Gráfico de productos -->
+      <div class=" mt-5 justify-content-center d-flex">
+        <div class="col-12 col-md-10 col-lg-8 w-50">
+          <div class="card shadow-sm border-0 rounded-4 p-4">
+            <h3 class="text-center mb-4 text-dark">Productos más vendidos esta semana</h3>
+            <ngx-charts-bar-vertical
+              [view]="view"
+              [results]="chartData"
+              [gradient]="gradient"
+              [xAxis]="showXAxis"
+              [yAxis]="showYAxis"
+              [legend]="showLegend"
+              [showXAxisLabel]="showXAxisLabel"
+              [showYAxisLabel]="showYAxisLabel"
+              [xAxisLabel]="xAxisLabel"
+              [yAxisLabel]="yAxisLabel">
+            </ngx-charts-bar-vertical>
+          </div>
+        </div>
+              <!-- 🔒 Sección premium bloqueada -->
+<div class="row g-4 mt-3 justify-content-center w-100">
+  
+  <!-- Comparativa mensual -->
+  <div class="col-md-4 col-lg-3 w-100">
+    <div class="card shadow-sm border-0 rounded-4 position-relative overflow-hidden" style="opacity: 0.6;">
+      <div class="card-body">
+        <span class="text-muted">Comparativa mensual</span>
+        <h5 class="fw-bold mt-2">+18% respecto a marzo</h5>
+        <div class="progress mt-3" style="height: 6px;">
+          <div class="progress-bar bg-success" style="width: 72%"></div>
+        </div>
+      </div>
+      <div class="position-absolute top-0 start-0 w-100 h-100 bg-white bg-opacity-75 d-flex align-items-center justify-content-center" style="backdrop-filter: blur(5px);">
+        <div class="text-center text-muted px-2">
+          <i class="bi bi-lock-fill fs-3 d-block mb-1"></i>
+          <small>Solo en el plan premium</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tasa de conversión -->
+  <div class="col-md-4 col-lg-3 w-100">
+    <div class="card shadow-sm border-0 rounded-4 position-relative overflow-hidden" style="opacity: 0.6;">
+      <div class="card-body">
+        <span class="text-muted">Tasa de conversión</span>
+        <h5 class="fw-bold mt-2">4.7%</h5>
+        <p class="text-muted small mb-0">De visitas a ventas</p>
+      </div>
+      <div class="position-absolute top-0 start-0 w-100 h-100 bg-white bg-opacity-75 d-flex align-items-center justify-content-center" style="backdrop-filter: blur(5px);">
+        <div class="text-center text-muted px-2">
+          <i class="bi bi-lock-fill fs-3 d-block mb-1"></i>
+          <small>Disponible en premium</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Clientes recurrentes -->
+  <div class="col-md-4 col-lg-3 w-100">
+    <div class="card shadow-sm border-0 rounded-4 position-relative overflow-hidden" style="opacity: 0.6;">
+      <div class="card-body">
+        <span class="text-muted">Clientes recurrentes</span>
+        <h5 class="fw-bold mt-2">36%</h5>
+        <p class="text-muted small mb-0">Recompran en menos de 30 días</p>
+      </div>
+      <div class="position-absolute top-0 start-0 w-100 h-100 bg-white bg-opacity-75 d-flex align-items-center justify-content-center" style="backdrop-filter: blur(5px);">
+        <div class="text-center text-muted px-2">
+          <i class="bi bi-lock-fill fs-3 d-block mb-1"></i>
+          <small>Requiere plan premium</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+      </div>
+
+
+    </div>
+    
+    
+
+</div>

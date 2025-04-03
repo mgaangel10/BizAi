@@ -1,20 +1,40 @@
+<h1 class="text-center mt-5" style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 600; color: #333;">Inicio de Sesión</h1>
 
-<h1 class="text-center mt-5">Login Administrador</h1>
-<div class="div mx-auto mt-5 card shadow   bg-white rounded" style="width: 40%; height: 300px; border-radius: 15px;">
-  <form [formGroup]="profileLogin" (ngSubmit)="login()">
-    <div class="mb-3 mx-auto w-50 mt-5">
-      <label for="emailLog" class="form-label">Email address</label>
-      <input type="email" class="form-control" id="emailLog" aria-describedby="emailHelp" formControlName="email">
+<div class="container d-flex justify-content-center align-items-center mt-5">
+  <div class="card shadow-xl p-5 bg-white rounded" style="max-width: 420px; width: 100%; border-radius: 20px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);">
+    <form [formGroup]="profileLogin" (ngSubmit)="login()">
+      <!-- Campo Email -->
+      <div class="mb-4">
+        <label for="emailLog" class="form-label" style="font-size: 1rem; font-weight: 500; color: #555;">Email</label>
+        <input type="email" class="form-control" id="emailLog" aria-describedby="emailHelp" formControlName="email" placeholder="Ingresa tu correo electrónico" 
+               style="border-radius: 12px; height: 50px; padding: 10px; font-size: 1rem; border: 1px solid #ccc;">
+      </div>
 
+      <!-- Campo Password -->
+      <div class="mb-4">
+        <label for="exampleInputPassword1" class="form-label" style="font-size: 1rem; font-weight: 500; color: #555;">Contraseña</label>
+        <input type="password" class="form-control" id="exampleInputPassword1" formControlName="password" placeholder="Ingresa tu contraseña" 
+               style="border-radius: 12px; height: 50px; padding: 10px; font-size: 1rem; border: 1px solid #ccc;">
+      </div>
 
-    </div>
-    <div class="mb-3 mx-auto w-50">
-      <label for="exampleInputPassword1" class="form-label">Password</label>
-      <input type="password" class="form-control" id="exampleInputPassword1" formControlName="password">
-    </div>
-    <div class="mb-3 mx-auto w-50">
-      <button type="submit " class="btn btn-primary  w-100">Submit</button>
-    </div>
+      <!-- Botón Submit -->
+      <div class="mb-4">
+        <button type="submit" class="btn btn-primary w-100" style="border-radius: 12px; height: 50px; font-size: 1.1rem; font-weight: 600; background-color: #0069d9; border-color: #0062cc; transition: background-color 0.3s ease;">
+          Iniciar sesión
+        </button>
+      </div>
 
-  </form>
+      <!-- Link de registro -->
+      <div class="text-center">
+        <a href="#" style="font-size: 0.95rem; color: #007bff; font-weight: 500;" [routerLink]="['/register']">¿No tienes Cuenta? Regístrate</a>
+      </div>
+    </form>
+  </div>
 </div>
+<div *ngIf="loginError" class="alert alert-danger text-center mt-3 mx-auto" style="max-width: 420px;">
+  {{ loginError }}
+</div>
+
+
+<!-- Estilos adicionales -->
+

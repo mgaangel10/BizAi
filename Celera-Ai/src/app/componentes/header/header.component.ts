@@ -20,6 +20,40 @@ export class HeaderComponent {
     })
   }
 
+  menuItems = [
+    {
+      label: 'Home',
+      icon: 'bi bi-house-door-fill',
+      action: () => this.detallesNegocios()
+    },
+    {
+      label: 'Inventario',
+      icon: 'bi bi-archive',
+      action: () => this.inventario()
+    },
+    {
+      label: 'Ventas',
+      icon: 'bi bi-wallet',
+      action: () => this.ventas()
+    },
+    {
+      label: 'Facturar',
+      icon: 'bi bi-layout-text-window-reverse',
+      action: () => this.facturas()
+    },
+    {
+      label: 'Estadísticas',
+      icon: 'bi bi-bar-chart-line',
+      action: () => this.estadisticas()
+    },
+    {
+      label: 'Asistente',
+      icon: 'bi bi-slack',
+      action: () => this.asistente()
+    }
+  ];
+  
+
   inventario(){
     let id = localStorage.getItem('IDNEGOCIO');
     
@@ -49,6 +83,13 @@ export class HeaderComponent {
     
       
       this.router.navigate(['/asistente', id]);
+    
+  }
+  estadisticas(){
+    let id = localStorage.getItem('IDNEGOCIO');
+    
+      
+      this.router.navigate(['/estadisticas', id]);
     
   }
 
