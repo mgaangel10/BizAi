@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.WeekFields;
 import java.util.*;
@@ -230,14 +231,24 @@ public class VentaService {
             Optional<Usuario> usuario = usuarioRepo.findByEmailIgnoreCase(nombre);
             Optional<Venta> venta = ventaRepo.findById(idVenta);
             if (usuario.isPresent()){
+                // De Date a LocalDate
+
+
+// De LocalDate a Date
+
+
                 venta.get().setActivo(false);
                 venta.get().setTieneFactura(false);
                 venta.get().setFecha(LocalDate.now());
+
                 venta.get().getDetalleVentas().stream().map(detalleVenta -> {
                     detalleVenta.getProdcuto().setStock(detalleVenta.getProdcuto().getStock()-detalleVenta.getCantidad());
                     return productoRepo.save(detalleVenta.getProdcuto());
                 }).collect(Collectors.toList());
 
+                ventaRepo.save(venta.get());
+                Date date = Date.from(venta.get().getFecha().atStartOfDay(ZoneId.systemDefault()).toInstant());
+                venta.get().setFechaNoMostrar(date);
                 ventaRepo.save(venta.get());
                 Negocio negocio = venta.get().getNegocio();
                 negocio.getVentas().add(venta.get());

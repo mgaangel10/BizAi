@@ -19,6 +19,9 @@ public interface VentaRepo extends JpaRepository<Venta, UUID> {
 
     List<Venta> findByNegocioId(UUID id);
 
+    @Query("SELECT v FROM Venta v LEFT JOIN FETCH v.detalleVentas d LEFT JOIN FETCH d.prodcuto WHERE v.negocio.id = :idNegocio")
+    List<Venta> findVentasConDetallesByNegocio(@Param("idNegocio") UUID idNegocio);
+
 
 
 }

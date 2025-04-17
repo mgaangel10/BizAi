@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,6 +26,7 @@ public class Venta {
     private UUID id;
     private String metodoPago;
     private LocalDate fecha;
+    private Date fechaNoMostrar;
     private double totalVenta;
     private boolean activo;
     private boolean terminado;

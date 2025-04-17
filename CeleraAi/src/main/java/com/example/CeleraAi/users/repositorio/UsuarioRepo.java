@@ -37,5 +37,12 @@ public interface UsuarioRepo extends JpaRepository<Usuario, UUID> {
             """)
     GetUsuario getUsuario(UUID uuid);
 
+    @Query("SELECT DISTINCT u FROM Usuario u LEFT JOIN FETCH u.negocios")
+    List<Usuario> obtenerTodosConNegocios();
+
+
+
+
+
 
 }
