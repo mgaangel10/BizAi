@@ -1,5 +1,6 @@
 package com.example.CeleraAi.Venta.repositorio;
 
+import com.example.CeleraAi.Negocio.model.Negocio;
 import com.example.CeleraAi.Venta.model.Venta;
 import org.apache.catalina.Lifecycle;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,6 +22,26 @@ public interface VentaRepo extends JpaRepository<Venta, UUID> {
 
     @Query("SELECT v FROM Venta v LEFT JOIN FETCH v.detalleVentas d LEFT JOIN FETCH d.prodcuto WHERE v.negocio.id = :idNegocio")
     List<Venta> findVentasConDetallesByNegocio(@Param("idNegocio") UUID idNegocio);
+
+    List<Venta> findByNegocioAndFecha(Negocio negocio, LocalDate fecha);
+
+    @Query("SELECT COALESCE(SUM(v.totalVenta), 0) " +
+            "FROM Venta v " +
+            "WHERE v.negocio = :negocio " +
+            "AND v.fecha >= :inicio " +
+            "AND v.fecha < :fin")
+    double totalVentasEntreFechas(
+            @Param("negocio") Negocio negocio,
+            @Param("inicio") LocalDate inicio,
+            @Param("fin") LocalDate fin);
+
+    @Query("SELECT COALESCE(SUM(v.totalVenta), 0) " +
+            "FROM Venta v " +
+            "WHERE v.negocio = :negocio " +
+            "AND v.fecha >= :desde")
+    double totalVentasDesde(
+            @Param("negocio") Negocio negocio,
+            @Param("desde") LocalDate desde);
 
 
 

@@ -4,10 +4,9 @@ import com.example.CeleraAi.Negocio.model.Negocio;
 import com.example.CeleraAi.Negocio.repositorio.NegocioRepo;
 import com.example.CeleraAi.OpenAi.PreguntaUsuarioDto;
 import com.example.CeleraAi.OpenAi.RegistroAccionIARepo;
-import com.example.CeleraAi.OpenAi.models.AccionIA;
-import com.example.CeleraAi.OpenAi.models.MensajeIA;
-import com.example.CeleraAi.OpenAi.models.ProductoStockUpdate;
-import com.example.CeleraAi.OpenAi.models.RegistroAccionIA;
+import com.example.CeleraAi.OpenAi.models.*;
+
+
 import com.example.CeleraAi.Producto.model.Producto;
 import com.example.CeleraAi.Producto.repositorio.ProductoRepo;
 import com.example.CeleraAi.Venta.model.DetalleVenta;
@@ -18,6 +17,7 @@ import com.example.CeleraAi.users.model.Usuario;
 import com.example.CeleraAi.users.repositorio.UsuarioRepo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.apache.poi.sl.draw.geom.GuideIf;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.http.*;
@@ -29,6 +29,7 @@ import org.springframework.web.client.RestTemplate;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -37,7 +38,7 @@ import java.util.stream.Collectors;
 public class OpenAIService {
 
     private static final String API_URL = "https://api.openai.com/v1/chat/completions";
-    private static final String API_KEY = "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"; // ¡Recuerda nunca compartir tu API key!
+
     private final UsuarioRepo usuarioRepo;
     private final VentaService ventaService;
     private final VentaRepo ventaRepo;
@@ -60,25 +61,29 @@ public class OpenAIService {
 
         List<MensajeIA> historial = historialPorUsuario.computeIfAbsent(userId, k -> new ArrayList<>());
         String mensajeUsuario = pregunta.pregunta().toLowerCase().trim();
+        System.out.println("mensaje del usuario: "+mensajeUsuario);
 
-        // ✅ SI el usuario responde afirmativamente (tipo "sí")
         if (mensajeUsuario.equals("sí") || mensajeUsuario.equals("si") || mensajeUsuario.contains("adelante")) {
             AccionIA sugerencia = ultimaSugerenciaPendiente.get(userId);
             if (sugerencia != null) {
-                ultimaSugerenciaPendiente.remove(userId); // Limpiamos después de ejecutar
+                ultimaSugerenciaPendiente.remove(userId);
                 return confirmarYEjecutarAccion(sugerencia, idNegocio);
             } else {
                 return "⚠️ No hay ninguna sugerencia pendiente para confirmar.";
             }
         }
 
-        // ✅ SI el usuario responde "no"
+        if (mensajeUsuario.contains("añademe") || mensajeUsuario.equals("creame") || mensajeUsuario.contains("haz")) {
+            AccionIA sugerencia = ultimaSugerenciaPendiente.get(userId);
+            System.out.println("eentra en mi if");
+            return confirmarYEjecutarAccion(sugerencia, idNegocio);
+        }
+
         if (mensajeUsuario.equals("no") || mensajeUsuario.contains("mejor no")) {
             ultimaSugerenciaPendiente.remove(userId);
             return "👍 Vale, no he añadido nada. Si quieres otra sugerencia, dímelo.";
         }
 
-        // ✅ Primera vez en la conversación: damos todo el contexto
         if (historial.isEmpty()) {
             String contexto = construirPromptUniversal(negocio.get(), pregunta.pregunta());
             historial.add(new MensajeIA("user", contexto));
@@ -86,10 +91,8 @@ public class OpenAIService {
             historial.add(new MensajeIA("user", pregunta.pregunta()));
         }
 
-        // Llamamos a OpenAI con el historial completo
         String respuesta = consultarOpenAIConHistorial(promptSistema, historial);
 
-        // Guardamos la respuesta en historial
         String contenido = new JSONObject(respuesta)
                 .getJSONArray("choices")
                 .getJSONObject(0)
@@ -98,8 +101,76 @@ public class OpenAIService {
 
         historial.add(new MensajeIA("assistant", contenido));
 
-        return procesarRespuestaSinEjecutar(respuesta); // le pasamos el id para guardar sugerencia
+        try {
+            int indexJson = contenido.indexOf("{");
+            if (indexJson != -1) {
+                String texto = contenido.substring(0, indexJson).trim();
+                String jsonSolo = contenido.substring(indexJson).trim();
+                JSONObject json = new JSONObject(jsonSolo);
+
+                String tipo = json.optString("tipo", "");
+
+                if ("accion".equalsIgnoreCase(tipo)) {
+                    AccionIA accion = new ObjectMapper().readValue(jsonSolo, AccionIA.class);
+                    return confirmarYEjecutarAccion(accion, idNegocio);
+                } else if ("sugerencia".equalsIgnoreCase(tipo)) {
+                    JSONObject accionJson = json.getJSONObject("accion");
+                    AccionIA sugerencia = fromJson(accionJson);
+                    ultimaSugerenciaPendiente.put(userId, sugerencia);
+                }
+
+                json.put("response", texto);
+                return json.toString(2); // ✅ Devuelve JSON bonito con texto en campo "response"
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        JSONObject simpleJson = new JSONObject();
+        simpleJson.put("tipo", "respuesta_simple");
+        simpleJson.put("response", contenido);
+        return simpleJson.toString(2);
     }
+
+
+
+    public static AccionIA fromJson(JSONObject json) {
+        AccionIA accion = new AccionIA();
+
+        accion.setAccion(json.optString("accion"));
+
+        JSONObject datos = json.optJSONObject("datos");
+        if (datos != null) {
+
+            // 🔍 Recuperamos el nombre desde "nombre" o "producto"
+            String nombre = datos.optString("nombre", null);
+            if (nombre == null || nombre.isBlank()) {
+                nombre = datos.optString("producto", null);
+            }
+            accion.setNombre(nombre);
+
+            // ✅ Recuperamos otros datos con seguridad
+            accion.setPrecio(datos.has("precio_venta") ? datos.optDouble("precio_venta") : null);
+            accion.setPrecioProveedor(datos.has("precio_proveedor") ? datos.optDouble("precio_proveedor") : null);
+            accion.setStock(datos.has("stock") ? datos.optInt("stock") : null);
+            accion.setProducto(datos.optString("producto", null));
+            accion.setCategoria(datos.optString("categoria", null));
+            accion.setDescuento(datos.has("descuento") ? datos.optInt("descuento") : null);
+
+            // 📦 Guardamos todo el JSON en el map genérico por si hace falta después
+            Map<String, Object> datosMap = new HashMap<>();
+            for (String key : datos.keySet()) {
+                datosMap.put(key, datos.get(key));
+            }
+            accion.setDatos(datosMap);
+        }
+
+        return accion;
+    }
+
+
+
+
 
 
     private Optional<Usuario> obtenerUsuarioAutenticado() {
@@ -168,75 +239,130 @@ public class OpenAIService {
                 });
 
         return """
-Eres un asistente inteligente especializado en la gestión de negocios pequeños.
+                Eres un asistente inteligente especializado en la gestión de negocios pequeños.
 
-📌 La categoría de este negocio es: **%s**
-Utiliza esta información para adaptar tus respuestas, recomendaciones y acciones al tipo de negocio. 
-No sugieras productos o decisiones que no tengan relación con esta categoría.
+                📌 La categoría de este negocio es: **%s**
+                Utiliza esta información para adaptar tus respuestas, recomendaciones y acciones al tipo de negocio. 
+                No sugieras productos o decisiones que no tengan relación con esta categoría.
 
-Tu trabajo es analizar la información del negocio y ayudar al usuario con:
+                Tu trabajo es analizar la información del negocio y ayudar al usuario con:
 
-✅ Consultas sobre sus datos (ventas, productos, stock, facturas…)
-✅ Acciones directas (crear productos, aplicar promociones, etc.)
-✅ Sugerencias inteligentes (nuevos productos, ideas para vender más…)
+                ✅ Consultas sobre sus datos (ventas, productos, stock, facturas…)
+                ✅ Acciones directas (crear productos, aplicar promociones, etc.)
+                ✅ Sugerencias inteligentes (nuevos productos, ideas para vender más…)
 
----
+                ---
 
-📌 SIEMPRE RESPONDE EN DOS PARTES:
+                📌 SIEMPRE RESPONDE EN DOS PARTES:
 
-1️⃣ Un mensaje corto, profesional y claro (máximo 3 líneas).
-2️⃣ Justo debajo, un JSON con la acción o respuesta estructurada.
+                1️⃣ Un mensaje corto, profesional y claro (máximo 3 líneas).
+                2️⃣ Justo debajo, un JSON con la acción o respuesta estructurada.
 
----
+                ---
 
-📋 FORMATO DEL JSON:
-{
-  "tipo": "consulta" | "accion" | "sugerencia",
-  "accion": "ver_ventas" | "crear_producto" | "sugerir_producto_nuevo" | "alertar_stock_bajo" | "crear_promocion" | etc,
-  "datos": {
-    ...
-  }
-}
+                📋 FORMATO DEL JSON:
 
----
+                {
+                  "tipo": "consulta" | "accion" | "sugerencia",
+                  "accion": "ver_ventas" | "crear_producto" | "sugerir_producto_nuevo" | "alertar_stock_bajo" | "crear_promocion" | etc,
+                  "datos": {
+                    ...
+                  }
+                }
 
-🔍 SI EL USUARIO HACE UNA PREGUNTA:
-Responde con tipo = "consulta"
+                ---
 
-🔧 SI EL USUARIO DA UNA ORDEN:
-Responde con tipo = "accion" y ejecuta sin preguntar
+                ⚠️ FORMATO ESTRICTO según el tipo:
 
-💡 SI ES UNA IDEA O ANÁLISIS:
-Responde con tipo = "sugerencia" y espera confirmación
+                🔧 Si el tipo es `"accion"`:
+                - El campo `"accion"` debe ser **un texto** (string), no un objeto.
+                - Todos los datos necesarios deben ir dentro de `"datos"`.
 
----
+                ✅ EJEMPLO CORRECTO (acción):
+                {
+                  "tipo": "accion",
+                  "accion": "crear_producto",
+                  "datos": {
+                    "nombre": "Croissant",
+                    "precio_venta": 1.50,
+                    "precio_proveedor": 0.40,
+                    "stock": 50
+                  }
+                }
 
-⚠️ MUY IMPORTANTE:
-- NO INVENTES DATOS. Usa solo la información proporcionada.
-- Si no tienes suficiente información, dilo educadamente.
-- El JSON debe estar bien cerrado y sin etiquetas ```json.
+                ❌ INCORRECTO:
+                {
+                  "tipo": "accion",
+                  "accion": { "accion": "crear_producto", "datos": { ... } }
+                }
 
----
+                💡 Si el tipo es `"sugerencia"`:
+                - En ese caso SÍ puedes poner `"accion"` como un objeto anidado con `"accion"` y `"datos"` dentro.
+                - Este tipo de respuesta **no se ejecuta** hasta que el usuario diga "sí", "hazlo", "adelante", etc.
 
-📦 DATOS DEL NEGOCIO:
+                ✅ EJEMPLO CORRECTO (sugerencia):
+                {
+                  "tipo": "sugerencia",
+                  "accion": {
+                    "accion": "sugerir_producto_nuevo",
+                    "datos": {
+                      "nombre": "Pan integral",
+                      "precio_venta": 2.0,
+                      "precio_proveedor": 0.80,
+                      "stock": 30
+                    }
+                  }
+                }
 
-PRODUCTOS:
-%s
+                ---
 
-VENTAS:
-%s
+                🔍 SI EL USUARIO HACE UNA PREGUNTA:
+                Responde con tipo = "consulta"
 
-FACTURAS:
-%s
+                🔧 SI EL USUARIO DA UNA ORDEN (como "añádelo", "hazlo", "actualiza stock", etc.):
+                Responde con tipo = "accion" y ejecuta directamente sin pedir confirmación.
+                Es obligatorio incluir estos campos en `"datos"`:
+                - nombre (string)
+                - precio_venta (decimal)
+                - precio_proveedor (decimal)
+                - stock (entero)
+                🔧 SI EL USUARIO DA UNA ORDEN (como  "actualiza stock"):
+                Responde con tipo = "accion" y ejecuta directamente sin pedir confirmación.
+                Es obligatorio incluir estos campos en `"datos"`:
+                - nombre (string)
+                - stock (entero)
 
-VENTAS SIN FACTURA:
-%s
+                💡 SI ES UNA IDEA O ANÁLISIS:
+                Responde con tipo = "sugerencia" y espera confirmación del usuario.
 
----
+                ---
 
-❓PREGUNTA DEL USUARIO:
-%s
-""".formatted(
+                ⚠️ MUY IMPORTANTE:
+                - NO INVENTES DATOS. Usa solo la información proporcionada.
+                - Si no tienes suficiente información, dilo educadamente.
+                - El JSON debe estar bien cerrado y sin etiquetas ```json.
+
+                ---
+
+                📦 DATOS DEL NEGOCIO:
+
+                PRODUCTOS:
+                %s
+
+                VENTAS:
+                %s
+
+                FACTURAS:
+                %s
+
+                VENTAS SIN FACTURA:
+                %s
+
+                ---
+
+                ❓PREGUNTA DEL USUARIO:
+                %s
+                """.formatted(
                 categoria,
                 productosStr,
                 ventasStr,
@@ -246,7 +372,7 @@ VENTAS SIN FACTURA:
         );
     }
 
-    private String procesarRespuestaSinEjecutar(String respuestaIA) {
+        private String procesarRespuestaSinEjecutar(String respuestaIA, UUID idNegocio) {
         Optional<Usuario> usuario = obtenerUsuarioAutenticado();
         try {
             String content = new JSONObject(respuestaIA)
@@ -266,8 +392,19 @@ VENTAS SIN FACTURA:
             if ("sugerencia".equalsIgnoreCase(tipo)) {
                 AccionIA sugerencia = new ObjectMapper().readValue(jsonSolo, AccionIA.class);
                 ultimaSugerenciaPendiente.put(usuario.get().getId(), sugerencia);
-            }
+            } else if ("accion".equalsIgnoreCase(tipo)) {
+                // Ejecutar directamente la acción
+                AccionIA accion = new ObjectMapper().readValue(jsonSolo, AccionIA.class);
+                String resultado = confirmarYEjecutarAccion(accion, idNegocio);
 
+                JSONObject respuestaFinal = new JSONObject();
+                respuestaFinal.put("mensaje", texto);
+                respuestaFinal.put("accion", new JSONObject(jsonSolo));
+                respuestaFinal.put("ejecutado", true);
+                respuestaFinal.put("resultado", resultado);
+
+                return respuestaFinal.toString();
+            }
 
             JSONObject resultado = new JSONObject();
             resultado.put("mensaje", texto);
@@ -288,20 +425,46 @@ VENTAS SIN FACTURA:
         switch (accion.getAccion()) {
 
             case "crear_producto", "sugerir_producto_nuevo" -> {
+                if (accion.getNombre() == null || accion.getPrecio() == null || accion.getPrecioProveedor() == null || accion.getStock() == null) {
+                    JSONObject error = new JSONObject();
+                    error.put("tipo", "error");
+                    error.put("response", "❌ Faltan datos obligatorios para crear el producto. Asegúrate de que nombre, precio, stock y proveedor estén definidos.");
+                    return error.toString(2);
+                }
+
+                System.out.println("🧠 Ejecutando creación de producto con:");
+                System.out.println("➡ Nombre: " + accion.getNombre());
+                System.out.println("➡ Precio venta: " + accion.getPrecio());
+                System.out.println("➡ Precio proveedor: " + accion.getPrecioProveedor());
+                System.out.println("➡ Stock: " + accion.getStock());
+
                 Producto prodcuto = new Producto();
                 prodcuto.setNombre(accion.getNombre());
-                prodcuto.setPrecio(accion.getPrecio() == null ? 1.0 : accion.getPrecio());
-                prodcuto.setStock(Optional.ofNullable(accion.getStock()).orElse(10));
+                prodcuto.setPrecio(accion.getPrecio());
+                prodcuto.setStock(accion.getStock());
                 prodcuto.setDisponible(true);
-                prodcuto.setPrecioProveedor(Optional.ofNullable(accion.getPrecioProveedor()).orElse(1.0));
+                prodcuto.setPrecioProveedor(accion.getPrecioProveedor());
                 prodcuto.setNegocio(negocio);
 
                 productoRepo.save(prodcuto);
                 negocio.getProdcutos().add(prodcuto);
                 negocioRepo.save(negocio);
                 guardarRegistro(accion.getAccion(), "Producto creado: " + prodcuto.getNombre(), negocio.getUsuario());
-                return "✅ Producto añadido con éxito.";
+
+                JSONObject json = new JSONObject();
+                json.put("tipo", "accion");
+                json.put("accion", "crear_producto");
+                json.put("datos", new JSONObject(Map.of(
+                        "nombre", prodcuto.getNombre(),
+                        "precio_venta", prodcuto.getPrecio(),
+                        "precio_proveedor", prodcuto.getPrecioProveedor(),
+                        "stock", prodcuto.getStock()
+                )));
+                json.put("response", "✅ Producto añadido con éxito.");
+
+                return json.toString(2);
             }
+
             case "actualizar_stock" -> {
                 System.out.println("👉 Ejecutando actualización de stock...");
 
@@ -313,10 +476,28 @@ VENTAS SIN FACTURA:
                         actualizarProducto(update, negocio, resultado);
                     }
                 } else {
-                    // Intentamos sacar desde campos planos
+                    // 🟨 Este es el bloque donde está tu código
                     Map<String, Object> datos = accion.getDatos();
-                    String nombre = (String) datos.get("producto");
-                    Integer stock = datos.get("nuevo_stock") != null ? ((Number) datos.get("nuevo_stock")).intValue() : null;
+
+// Aceptamos "producto" o "nombre"
+                    String nombre = null;
+                    if (datos.containsKey("producto")) {
+                        nombre = (String) datos.get("producto");
+                    } else if (datos.containsKey("nombre")) {
+                        nombre = (String) datos.get("nombre");
+                    }
+
+// Aceptamos "nuevo_stock" o "stock"
+                    Integer stock = null;
+                    if (datos.containsKey("nuevo_stock")) {
+                        stock = ((Number) datos.get("nuevo_stock")).intValue();
+                    } else if (datos.containsKey("stock")) {
+                        stock = ((Number) datos.get("stock")).intValue();
+                    }
+
+                    System.out.println("🔍 Datos recibidos: " + datos);
+                    System.out.println("🧪 Nombre detectado: " + nombre);
+                    System.out.println("🧪 Stock detectado: " + stock);
 
                     if (nombre != null && stock != null) {
                         ProductoStockUpdate update = new ProductoStockUpdate(nombre, stock);
@@ -324,10 +505,19 @@ VENTAS SIN FACTURA:
                     } else {
                         resultado.append("❌ Datos incompletos para actualizar stock.");
                     }
+
                 }
 
                 guardarRegistro("actualizar_stock", resultado.toString(), negocio.getUsuario());
-                return resultado.toString();
+
+                JSONObject json = new JSONObject();
+                json.put("tipo", "accion");
+                json.put("accion", "actualizar_stock");
+                json.put("datos", accion.getDatos()); // puedes ajustar si quieres que solo devuelva producto y nuevo_stock
+                json.put("response", resultado.toString().replace("\\n", "").trim()); // eliminamos \n si los hay
+
+                return json.toString(2); // JSON bonito
+
             }
 
 
@@ -401,15 +591,19 @@ VENTAS SIN FACTURA:
         LocalDate hace30Dias = hoy.minusDays(30);
 
         for (Producto p : negocio.getProdcutos()) {
-            boolean seVendio = ventas.stream()
-                    .flatMap(v -> v.getDetalleVentas().stream())
-                    .anyMatch(d -> d.getProdcuto().getId().equals(p.getId()) &&
-                            d.getVenta().getFecha().isAfter(hace30Dias));
+            // Solo revisar si el producto fue creado hace más de 30 días
+            if (p.getFechaCrecaion() != null && p.getFechaCrecaion().isBefore(hoy.minusDays(30))) {
+                boolean seVendio = ventas.stream()
+                        .flatMap(v -> v.getDetalleVentas().stream())
+                        .anyMatch(d -> d.getProdcuto().getId().equals(p.getId()) &&
+                                d.getVenta().getFecha().isAfter(hace30Dias));
 
-            if (!seVendio) {
-                alertas.add("😴 El producto '" + p.getNombre() + "' no ha tenido ventas en los últimos 30 días.");
+                if (!seVendio) {
+                    alertas.add("😴 El producto '" + p.getNombre() + "' no ha tenido ventas en los últimos 30 días.");
+                }
             }
         }
+
 
         // 4️⃣ Previsión de ventas para la próxima semana (promedio simple de las últimas 4 semanas)
         LocalDate hace4Semanas = hoy.minusWeeks(4);
@@ -418,8 +612,13 @@ VENTAS SIN FACTURA:
                 .mapToDouble(Venta::getTotalVenta)
                 .sum();
 
+        // 4️⃣ Previsión de ventas para la próxima semana (promedio simple de las últimas 4 semanas)
         double promedioSemanal = totalUltimas4Semanas / 4.0;
-        alertas.add("🔮 Previsión de ventas para la próxima semana: " + String.format("%.2f", promedioSemanal) + " €.");
+        LocalDate proximaSemana = inicioSemana.plusWeeks(1);
+        alertas.add("🔮 Si todo sigue igual, podrías vender aproximadamente " +
+                String.format("%.2f", promedioSemanal) + " € en la semana del " +
+                proximaSemana.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) + ".");
+
 
         return alertas;
     }

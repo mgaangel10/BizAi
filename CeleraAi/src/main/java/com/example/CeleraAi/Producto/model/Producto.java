@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
@@ -21,6 +22,8 @@ public class Producto {
     private UUID id;
     private String nombre;
     private boolean disponible;
+
+    private LocalDate fechaCrecaion;
     private double precio;
     private int stock;
     private double precioProveedor;

@@ -48,6 +48,7 @@ public class ProductoService {
                 prodcuto.setPrecio(crearProductoDto.precio());
                 prodcuto.setStock(crearProductoDto.stock());
                 prodcuto.setDisponible(true);
+                prodcuto.setFechaCrecaion(LocalDate.now());
                 prodcuto.setPrecioProveedor(crearProductoDto.precioProveedor());
                 prodcuto.setNegocio(negocio.get());
 
@@ -92,6 +93,7 @@ public class ProductoService {
 
                         producto.setNegocio(negocioOpt.get());
                         producto.setDisponible(true);
+                        producto.setFechaCrecaion(LocalDate.now());
                         productoRepo.save(producto);
 
                         negocioOpt.get().getProdcutos().add(producto);

@@ -33,7 +33,7 @@ public class EmailSender {
 
     // 🕗 Enviar todos los días a las 20:00 (hora servidor)
 
-    @Scheduled(cron = "0 30 17 * * *")
+    @Scheduled(cron = "0 21 00 * * *")
     public void enviarResumenADuenos() {
         List<Usuario> usuarios = usuarioRepo.obtenerTodosConNegocios();
 
@@ -70,7 +70,8 @@ public class EmailSender {
             MimeMessageHelper helper = new MimeMessageHelper(mensaje, true, "UTF-8");
 
             helper.setTo(to);
-            helper.setSubject(asunto);
+            helper.setSubject("[BIZYVEL-AI] 📊 Resumen diario de tu negocio");
+
             helper.setText(texto);
 
             // Adjuntar el PDF

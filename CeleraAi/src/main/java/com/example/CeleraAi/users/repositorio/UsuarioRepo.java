@@ -9,6 +9,7 @@ import java.util.UUID;
 
 
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +21,9 @@ public interface UsuarioRepo extends JpaRepository<Usuario, UUID> {
     boolean existsByEmailIgnoreCase(String email);
     List<Usuario> findByEnabledFalse();
     Optional<Usuario> findByEmailIgnoreCase(String nombre);
+    @Query("SELECT u FROM Usuario u LEFT JOIN FETCH u.negocios WHERE u.email = :email")
+    Usuario findByEmailConNegocios(@Param("email") String email);
+
     List<Usuario> findByEnabledTrue();
 
     @Query("""
